@@ -1,0 +1,29 @@
+/* animations */
+@import url(./animations/GeneralTransitions.css);
+@import url(./animations/PageChange.css);
+@import url(./animations/ScrollAnimations.css);
+
+/* cssSTAGS */
+@import url(./SimpleTags.css);
+
+/* Components */
+@import url(./components/Buttons.css);
+
+/* effects */
+@import url(./effects/LiquidGlass.css);
+
+/* base theme - light */
+:root {
+    --background-color: #f5f5f5;
+    --foreground-color: #fff;
+
+    --text-color: #333;
+    --text-secondary-color: #666;
+
+    --stroke-color: #ccc;
+    --stroke-secondary-color: #999;
+
+    --form-stroke-color: #ccc;
+    --form-stroke-secondary-color: #999;
+
+}
