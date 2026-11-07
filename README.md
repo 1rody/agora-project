@@ -11,18 +11,18 @@ Projeto desenvolvido pela empresa fictícia **SALVATECH**, para a matéria de Pr
 - Para Verificar as decisoes tomadas durante o desenvolvimento leia o DECISIONS.md
   
 ## Estrutura de pastas e arquivos.
-├── index.html
-└── styles/
-├── animations/
-│   ├── general-transitions.css
-│   ├── page-change.css
-│   └── scroll-animations.css
-├── components/
-│   ├── buttons.css
-│   ├── forms.css
-│   └── misc.css
-└── effects/
-└── liquid-glass.csstext## Como rodar
+├── index.html <br/>
+└── styles/ <br/>
+├── animations/ <br/>
+│   ├── general-transitions.css <br/>
+│   ├── page-change.css <br/>
+│   └── scroll-animations.css <br/>
+├── components/ <br/>
+│   ├── buttons.css <br/>
+│   ├── forms.css <br/>
+│   └── misc.css <br/>
+└── effects/ <br/>
+└── liquid-glass.csstext## Como rodar <br/>
 
 ### Localhost
 
