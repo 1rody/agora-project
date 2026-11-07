@@ -1,30 +1,40 @@
 # agora-project
-Projeto desevnolvidor pela empresa ficticia SALVATECH, para a materia de Processos de software UCSAL | ELTON
 
+Projeto desenvolvido pela empresa fictícia **SALVATECH**, para a matéria de Processos de Software - UCSAL | Professor Elton.
 
-## como foi feito e estrutura de pastas e arquivos
+## Como foi feito
 
-- Vamos utilizar KebabCase  (NomeDoArquivo) para todos os arquivos de CSS.
+- Utilizamos **kebab-case** para todos os arquivos CSS  
+  Exemplo: `general-transitions.css`, `page-change.css`
+- Utilizamos **camelCase** para os arquivos HTML  
+  Exemplo: `index.html`, `loremIpsum.html`
+- Para Verificar as decisoes tomadas durante o desenvolvimento leia o DECISIONS.md
+  
+## Estrutura de pastas e arquivos.
+├── index.html
+└── styles/
+├── animations/
+│   ├── general-transitions.css
+│   ├── page-change.css
+│   └── scroll-animations.css
+├── components/
+│   ├── buttons.css
+│   ├── forms.css
+│   └── misc.css
+└── effects/
+└── liquid-glass.csstext## Como rodar
 
+### Localhost
 
-- Utilizar camelCase para os arquivos de HTML
-ex index.html ou loremYpsun.
+1. Baixe o [Visual Studio Code](https://code.visualstudio.com/)
+2. Instale a extensão **Live Preview**
+3. Clique com o botão direito no `index.html` → **Show Preview**
+4. Acesse o endereço gerado (geralmente `http://localhost:xxxx`)
 
--Estrutura de pastas:
+### Deploy (Vercel)
 
-SRC/ <br/>
-    index.html <br/>
-    /styles <br/>
-        /animations <br/>
-            GeneralTransitions.css <br/>
-            PageChange.css <br/>
-            ScrollAnimations.css <br/>
-        /components <br/>
-            Buttons.css <br/>
-            Forms.css <br/>
-            Misc.css <br/>
-        /effects <br/>
-            LiquidGlass.css <br/>
-    /scripts <br/>
-    *nothing here now* but ion the script section follow the same logic (script -> category -> script.js)
-
+1. Acesse [vercel.com](https://vercel.com) e faça login
+2. Clique em **Add New Project**
+3. Selecione este repositório
+4. Clique em **Deploy**
+5. Pronto! A Vercel vai gerar um link de acesso (ou você pode adicionar um domínio personalizado)
