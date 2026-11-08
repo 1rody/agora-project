@@ -4,8 +4,8 @@ Projeto desenvolvido pela empresa fictícia **SALVATECH**, para a matéria de Pr
 
 ## Como foi feito
 
-- Utilizamos **kebab-case** para todos os arquivos CSS  
-  Exemplo: `general-transitions.css`, `page-change.css`
+- Utilizamos **PascalCase** para todos os arquivos CSS  
+  Exemplo: `GeneralTransitions.css`, `PageChange.css`
 - Utilizamos **camelCase** para os arquivos HTML  
   Exemplo: `index.html`, `loremIpsum.html`
 - Para Verificar as decisoes tomadas durante o desenvolvimento leia o DECISIONS.md
