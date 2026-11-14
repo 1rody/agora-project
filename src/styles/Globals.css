@@ -5,7 +5,7 @@
 
 /* cssSTAGS */
 @import url(./SimpleTags.css);
-
+@import url(./components/Misc.css);
 /* Components */
 @import url(./components/Buttons.css);
 @import url(./components/navigation/Navigation.css);
@@ -31,4 +31,12 @@
     --form-stroke-color: #ccc;
     --form-stroke-secondary-color: #999;
 
+}
+
+h1, h2, span {
+    font-weight: 500;
+}
+
+body {
+    background-color: var(--background-color);
 }
