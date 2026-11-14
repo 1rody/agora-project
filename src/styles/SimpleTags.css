@@ -18,7 +18,12 @@
     height: fit-content;
 }
 /* display flex bases */
-
+.bottom-0 {
+    bottom: 0;
+}
+.fixed {
+    position: fixed;
+}
 .flex {
     display: flex;
 }
@@ -117,4 +122,11 @@
 }
 .text-right {
     text-align: right;
+}
+
+.p-1 {
+    padding: .5rem;
+}
+.gap-1 {
+    gap: 1rem;
 }

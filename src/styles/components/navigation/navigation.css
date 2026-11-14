@@ -1,0 +1,29 @@
+#navigation {
+    a {
+        padding: .5rem;
+        border-radius: 2rem;
+        transition: .2s;
+            width: 3rem;
+            display: flex;
+            justify-content: center;
+            object-fit: contain;
+        img {
+            object-fit: contain;
+            width: 3rem;
+            height: 2rem;
+            max-height: 2rem;
+            max-width: 2rem;
+        }
+        &:hover {
+            transform: scale(1.05);
+            img {
+                filter: invert(100);
+            }
+            background-color: black;
+            .anim-rotating {
+                animation: rotation 2s ease-in-out;
+            }
+        }
+        
+    }
+}
