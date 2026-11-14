@@ -4,19 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="./styles/Globals.css">
     <script defer src="./scripts/app.js/MockProfile.js"></script>
+
+
     <title>Agora</title>
 </head>
-<body>
-    <main id="app">
-        <header data-profile id="profile" class="flex flex-col w-full">
-            <h2 data-field="name"></h2>
-            <span data-field="lastTimeOnline"></span>
+<body class="google-sans">
+    <main id="app" class="w-full h-screen">
+        <header data-profile id="profile" class="flex p-1 flex-col ">
+            <div class="flex items-center gap-1 pt-5 text-xl">
+                <p>Bem vindo(a) </p>
+                <p data-field="name"></p> 
+            </div>
+            <span class="text-sm" data-field="lastTimeOnline"></span>
         </header>
+        <section id="stats">
+
+        </section>
+        <section id="tasks">
+
+        </section>
     </main>
     <footer class="fixed bottom-0 w-full items-center justify-center flex">
-        <nav id="navigation" class=" flex items-center w-full justify-between p-1">
+        <nav id="navigation" class=" flex items-center  w-full justify-between p-1">
             <ol class="flex items-center gap-1 glass p-1 justify-around">
                 <li><a href="#"><img src="../assets/icons/Brand.svg" alt="Inicio"></a></li>
                 <li><a href="#"><img src="../assets/icons/List.svg" alt="Inicio"></a></li>
