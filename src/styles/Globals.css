@@ -8,7 +8,7 @@
 
 /* Components */
 @import url(./components/Buttons.css);
-@import url(./components/navigation/navigation.css);
+@import url(./components/navigation/Navigation.css);
 
 /* effects */
 @import url(./effects/LiquidGlass.css);

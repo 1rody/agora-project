@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="./styles/Globals.css">
-
+    <script defer src="./scripts/app.js/MockProfile.js"></script>
     <title>Agora</title>
 </head>
 <body>
     <main id="app">
-
+        <header data-profile id="profile" class="flex flex-col w-full">
+            <h2 data-field="name"></h2>
+            <span data-field="lastTimeOnline"></span>
+        </header>
     </main>
     <footer class="fixed bottom-0 w-full items-center justify-center flex">
         <nav id="navigation" class=" flex items-center w-full justify-between p-1">
@@ -25,4 +28,5 @@
         </nav>
     </footer>
 </body>
+
 </html>
