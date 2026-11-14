@@ -1,6 +1,6 @@
 /* animations */
 @import url(./animations/GeneralTransitions.css);
-@import url(./animations/PageChange.css);
+@import url(./animations/GeneralTransitions.css);
 @import url(./animations/ScrollAnimations.css);
 
 /* cssSTAGS */
@@ -8,10 +8,15 @@
 
 /* Components */
 @import url(./components/Buttons.css);
+@import url(./components/navigation/navigation.css);
 
 /* effects */
 @import url(./effects/LiquidGlass.css);
 
+* {
+    margin: 0;
+    padding: 0;
+}
 /* base theme - light */
 :root {
     --background-color: #f5f5f5;
