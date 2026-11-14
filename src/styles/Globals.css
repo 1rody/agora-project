@@ -13,30 +13,19 @@
 /* effects */
 @import url(./effects/LiquidGlass.css);
 
+
+/* themes */
+@import url(./Theme.css);
+
+h1, h2, span, p {
+    font-weight: 500;
+    color: var(--text-color);
+}
+ol {
+    list-style: none;
+}
 * {
+    text-decoration: none;
     margin: 0;
     padding: 0;
-}
-/* base theme - light */
-:root {
-    --background-color: #f5f5f5;
-    --foreground-color: #fff;
-
-    --text-color: #333;
-    --text-secondary-color: #666;
-
-    --stroke-color: #ccc;
-    --stroke-secondary-color: #999;
-
-    --form-stroke-color: #ccc;
-    --form-stroke-secondary-color: #999;
-
-}
-
-h1, h2, span {
-    font-weight: 500;
-}
-
-body {
-    background-color: var(--background-color);
 }

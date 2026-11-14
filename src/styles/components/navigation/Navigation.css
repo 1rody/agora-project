@@ -19,11 +19,30 @@
             img {
                 filter: invert(100);
             }
-            background-color: black;
+            background-color: var(--dark);
             .anim-rotating {
                 animation: rotation 2s ease-in-out;
             }
         }
         
     }
+}
+@media (prefers-color-scheme: dark) {
+#navigation {
+    img {
+        filter: invert(100);
+    }
+    a {
+        &:hover {
+            transform: scale(1.05);
+            img {
+                filter: invert(0);
+            }
+            background-color: var(--light);
+            .anim-rotating {
+                animation: rotation 2s ease-in-out;
+            }
+        }
+    }
+}
 }
