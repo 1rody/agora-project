@@ -14,7 +14,6 @@ export const accounts = [
         id: "01",
         name: "Lucas",
         lastTimeOnline: "14/11/2026 : 14:07",
-        price: 5, 
     },
 ];
 
