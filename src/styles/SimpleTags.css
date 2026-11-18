@@ -143,3 +143,6 @@
 .rounded-md {
     border-radius: 1.4rem;
 }
+.border-none {
+    border: 0;
+}
