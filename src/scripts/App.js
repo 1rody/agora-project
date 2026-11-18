@@ -21,13 +21,20 @@ const tasksSection = document.querySelector("#tasks");
 myTasks.forEach((task) => {
     const card = document.createElement("article");
     card.innerHTML = `
-        <h3 data-field="name"></h3>
-        <p data-field="description"></p>
-        <span data-field="priority"></span>
-        <span data-field="estimatedTime"></span>
+        <div class="flex flex-col p-2 glass-second rounded-md">
+            <div class="w-full text-right">
+                <h3 class="text-xl" data-field="name"></h3>
+                <span data-field="priority"></span>
+            </div>
+            <div class="flex">
+                <div>
+                    <span data-field="estimatedTime"></span>
+                    <p class="text-sm">21/07 as 11:00 ate 22/07</p>
+                </div>
+            </div>
+        </div>
     `;
     card.querySelector('[data-field="name"]').textContent = task.name;
-    card.querySelector('[data-field="description"]').textContent = task.description;
     card.querySelector('[data-field="priority"]').textContent = task.priority;
     card.querySelector('[data-field="estimatedTime"]').textContent = `${task.estimatedTime} min`;
 
