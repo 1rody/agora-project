@@ -1,0 +1,35 @@
+#login-form {
+    fieldset {
+        transition: .2s;
+        input {
+            background-color: var(--background-color);
+            border: 1px solid;
+            border-color: rgba(82, 84, 94, 0.527);
+            padding: 1rem;
+            appearance: none;
+        }
+        label {
+            position: relative;
+            margin-left: 1rem;
+            font-weight: bolder;
+            top: 2.2rem;
+            transition: .2s;
+            width: full;
+            padding: .2rem;
+            border-radius: 2rem;
+            background-color: var(--background-color);
+        }
+        &:hover {
+            label {
+                border-radius: 2rem;
+                position: relative;
+                margin-left: 1rem;
+                font-weight: bolder;
+                top: 0.6rem;
+                width: fit-content;
+                padding: .2rem;
+                background-color: var(--background-color);
+            }
+        }
+    }
+}
