@@ -19,6 +19,7 @@
 .bottom-0 {
     bottom: 0;
 }
+
 .fixed {
     position: fixed;
 }
@@ -121,7 +122,12 @@
 .text-right {
     text-align: right;
 }
-
+.p-5 {
+    padding: 2rem;
+}
+.p-2 {
+    padding: 1rem;
+}
 .p-1 {
     padding: .5rem;
 }
@@ -133,4 +139,7 @@
 }
 .bg-foreground {
     background-color: var(--foreground-color);
+}
+.rounded-md {
+    border-radius: 1.4rem;
 }
