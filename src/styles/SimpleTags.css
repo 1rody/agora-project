@@ -62,7 +62,12 @@
 .justify-start {
     justify-content: flex-start;
 }
-
+.rounded-md {
+    border-radius: 1.2rem;
+}
+.rounded-xl {
+    border-radius: 2rem;
+}
 /* text sizes */
 .text-xs {
     font-size: 0.6rem;
