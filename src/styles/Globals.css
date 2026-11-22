@@ -9,6 +9,7 @@
 /* Components */
 @import url(./components/Forms.css);
 @import url(./components/Buttons.css);
+@import url(./components/Chat.css);
 @import url(./components/navigation/Navigation.css);
 
 /* effects */

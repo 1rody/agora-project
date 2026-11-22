@@ -1,6 +1,51 @@
 .primary-btn {
-
+    appearance: none;
+    border-style: none;
+    border-radius: 2rem;
+    color: var(--foreground-color);
+    padding: 1rem 3rem;
+    background-color: var(--blue-pure);
+    font-family: inherit;
+    transition: .2s;
+    &:hover {
+        opacity: 80%;
+    }
+    &:active {
+        transform: scale(0.9);
+    }
+}
+.secondary-btn.glass {
+    margin-left: 0;
+    color: var(--text-color);
 }
 .secondary-btn {
-    
+    appearance: none;
+    border-style: none;
+    border-radius: 2rem;
+    padding: 1rem 3rem;
+    font-family: inherit;
+    transition: .2s;
+    &:hover {
+        opacity: 80%;
+    }
+    &:active {
+        transform: scale(0.9);
+    }
+}
+.task-btns {
+    flex: 1;
+    max-width: 60%;
+    button {
+        flex: 1;
+        min-height: 2.75rem;
+        padding: .7rem 1.4rem;
+        font-size: .9rem;
+    }
+}
+.task-btns-full {
+    max-width: 100%;
+    justify-content: space-between;
+    button {
+        flex: none;
+    }
 }

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../styles/Globals.css">
+    <script type="module">
+        import { getHistoryByProfile } from "../data/HistoryMock.js";
+
+        const labels = { created: "Criada", deleted: "Apagada" };
+        const list = document.querySelector("#history-list");
+
+        getHistoryByProfile("01").forEach((entry) => {
+            const item = document.createElement("article");
+            item.className = "flex w-full items-center justify-between p-1";
+            item.innerHTML = `
+                <div class="flex flex-col">
+                    <p class="text-md" data-field="taskName"></p>
+                    <span class="text-sm text-secondary" data-field="date"></span>
+                </div>
+                <span class="text-sm" data-field="action"></span>
+            `;
+            item.querySelector('[data-field="taskName"]').textContent = entry.taskName;
+            item.querySelector('[data-field="date"]').textContent = entry.date;
+            item.querySelector('[data-field="action"]').textContent = labels[entry.action];
+
+            list.append(item);
+        });
+    </script>
+
+
+    <title>Agora</title>
+</head>
+<body class="google-sans">
+    <main id="history" class="w-full gap-1 items-center flex flex-col h-screen">
+        <header class="flex w-full items-center justify-center gap-1 p-1 pt-5">
+            <a class="glass rounded-xl p-1 text-xl text-primary" href="../app.html">←</a>
+            <h1 class="text-xl text-center">HISTORICO</h1>
+        </header>
+        <section class="w-full p-1">
+            <div id="history-list" class="glass rounded-md flex flex-col gap-1 p-1 w-full"></div>
+        </section>
+    </main>
+</body>
+
+</html>
