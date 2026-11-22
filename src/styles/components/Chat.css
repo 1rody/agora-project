@@ -1,0 +1,42 @@
+#new-task, #history {
+    overflow-x: hidden;
+    * {
+        box-sizing: border-box;
+    }
+}
+.chat-messages {
+    flex: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.chat-messages .chat-bubble {
+    max-width: 75%;
+    overflow-wrap: anywhere;
+    color: var(--text-color);
+}
+.chat-messages .chat-user {
+    background-color: var(--blue-pure);
+    color: var(--foreground-color);
+}
+.chat-input {
+    min-width: 0;
+    background-color: transparent;
+    color: var(--text-color);
+    outline: none;
+    font-family: inherit;
+}
+.chat-send {
+    appearance: none;
+    border-style: none;
+    color: var(--foreground-color);
+    padding: .6rem 1.4rem;
+    background-color: var(--blue-pure);
+    font-family: inherit;
+    transition: .2s;
+    &:hover {
+        opacity: 80%;
+    }
+    &:active {
+        transform: scale(0.9);
+    }
+}

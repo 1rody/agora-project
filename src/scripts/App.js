@@ -18,18 +18,40 @@ const tasksSection = document.querySelector("#tasks");
 
 //gera a task quando ela for criada (apos uma criada ela e adicionada ao array sempre comecndo com 0 se ha task perfeito;
 //se ha task task surge e e criada seguindo a estrutura do article)
-myTasks.forEach((task) => {
+myTasks.forEach((task, index) => {
+    const isNow = index === 0;
     const card = document.createElement("article");
-    card.innerHTML = `
+    card.innerHTML = isNow ? `
         <div class="flex flex-col p-2 glass rounded-md">
-            <div class="w-full text-right">
-                <h3 class="text-xl text-primary" data-field="name"></h3>
-                <span data-field="priority"></span>
-            </div>
-            <div class="flex">
-                <div>
+            <div class="flex w-full items-center justify-between gap-1">
+                <div class="flex flex-col">
                     <span data-field="estimatedTime"></span>
                     <p class="text-sm">21/07 as 11:00 ate 22/07</p>
+                </div>
+                <div class="text-right">
+                    <h3 class="text-lg text-primary" data-field="name"></h3>
+                    <span data-field="priority"></span>
+                </div>
+            </div>
+            <div class="task-btns task-btns-full flex w-full items-center gap-1 pt-5">
+                <button class="secondary-btn glass" type="button">Iniciar</button>
+                <button class="primary-btn" type="button">Proxima</button>
+            </div>
+        </div>
+    ` : `
+        <div class="flex flex-col p-2 glass rounded-md">
+            <div class="w-full text-right">
+                <h3 class="text-lg text-primary" data-field="name"></h3>
+                <span data-field="priority"></span>
+            </div>
+            <div class="flex w-full items-center justify-between gap-1 pt-5">
+                <div class="flex flex-col">
+                    <span data-field="estimatedTime"></span>
+                    <p class="text-sm">21/07 as 11:00 ate 22/07</p>
+                </div>
+                <div class="task-btns flex items-center gap-1">
+                    <button class="secondary-btn glass" type="button">Concluir</button>
+                    <button class="primary-btn" type="button">Adiantar</button>
                 </div>
             </div>
         </div>

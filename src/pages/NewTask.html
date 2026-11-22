@@ -12,24 +12,55 @@
     <script type="module">
         import { addTask } from "../data/MockTask.js";
 
-        const form = document.querySelector("#task-form");
+        const questions = [
+            { field: "name", text: "Qual o nome da tarefa?" },
+            { field: "description", text: "Descreva a tarefa." },
+            { field: "priority", text: "Qual a prioridade? (baixa, media, alta)" },
+            { field: "startDate", text: "Quando começa?" },
+            { field: "endDate", text: "Quando termina?" },
+            { field: "estimatedTime", text: "Quanto tempo estimado em minutos?" },
+        ];
 
-        //ao enviar cria a task no array (perfil 01) e mostra a mensagem
+        const form = document.querySelector("#chat-form");
+        const messages = document.querySelector("#messages");
+        const answers = {};
+        let step = 0;
+
+        const showMessage = (text, author) => {
+            const row = document.createElement("div");
+            row.className = author === "user" ? "flex w-full justify-end" : "flex w-full justify-start";
+
+            const bubble = document.createElement("p");
+            bubble.className = author === "user" ? "chat-bubble chat-user rounded-xl p-1 text-sm" : "chat-bubble glass rounded-xl p-1 text-sm";
+            bubble.textContent = text;
+
+            row.append(bubble);
+            messages.append(row);
+            messages.scrollTop = messages.scrollHeight;
+        };
+
+        showMessage(questions[0].text, "bot");
+
         form.addEventListener("submit", (event) => {
             event.preventDefault();
 
-            const task = addTask({
-                profileId: "01",
-                name: form.elements.name.value,
-                description: form.elements.description.value,
-                startDate: form.elements.startDate.value,
-                endDate: form.elements.endDate.value,
-                priority: form.elements.priority.value,
-                estimatedTime: Number(form.elements.estimatedTime.value),
-            });
+            const text = form.elements.message.value.trim();
+            if (!text || step >= questions.length) return;
 
-            form.querySelector('[data-field="message"]').textContent = `Tarefa criada: ${task.name}`;
+            showMessage(text, "user");
+            answers[questions[step].field] = text;
             form.reset();
+            step++;
+
+            setTimeout(() => {
+                if (step < questions.length) {
+                    showMessage(questions[step].text, "bot");
+                    return;
+                }
+
+                const task = addTask({ profileId: "01", ...answers, estimatedTime: Number(answers.estimatedTime) || 0 });
+                showMessage(`Tarefa criada: ${task.name}`, "bot");
+            }, 400);
         });
     </script>
 
@@ -37,39 +68,17 @@
     <title>Agora</title>
 </head>
 <body class="google-sans">
-    <main id="new-task" class="w-full gap-1 overflow-hidden flex flex-col h-screen">
-        <form id="task-form" class="p-1 flex text-primary flex-col items-center h-screen justify-center">
-            <fieldset class="border-none flex flex-col w-fit">
-                <label for="name" class="text-primary text-sm">NOME</label>
-                <input class="p-1 rounded-md text-primary bg-background" placeholder="Estudar JS" type="text" name="name" id="name" required>
-            </fieldset>
-            <fieldset class="border-none flex flex-col w-fit">
-                <label for="description" class="text-primary text-sm">DESCRICAO</label>
-                <input class="p-1 rounded-md text-primary bg-background" placeholder="Revisar modulos" type="text" name="description" id="description" required>
-            </fieldset>
-            <fieldset class="border-none flex flex-col w-fit">
-                <label for="priority" class="text-primary text-sm">PRIORIDADE</label>
-                <select class="p-1 rounded-md text-primary bg-background" name="priority" id="priority" required>
-                    <option value="low">Baixa</option>
-                    <option value="medium">Media</option>
-                    <option value="high">Alta</option>
-                </select>
-            </fieldset>
-            <fieldset class="border-none flex flex-col w-fit">
-                <label for="startDate" class="text-primary text-sm">INICIO</label>
-                <input class="p-1 rounded-md text-primary bg-background" type="date" name="startDate" id="startDate" required>
-            </fieldset>
-            <fieldset class="border-none flex flex-col w-fit">
-                <label for="endDate" class="text-primary text-sm">FIM</label>
-                <input class="p-1 rounded-md text-primary bg-background" type="date" name="endDate" id="endDate" required>
-            </fieldset>
-            <fieldset class="border-none flex flex-col w-fit">
-                <label for="estimatedTime" class="text-primary text-sm">TEMPO ESTIMADO (MIN)</label>
-                <input class="p-1 rounded-md text-primary bg-background" placeholder="55" type="number" min="1" name="estimatedTime" id="estimatedTime" required>
-            </fieldset>
-            <p class="text-sm" data-field="message"></p>
-            <button class="primary-btn" type="submit">CRIAR TAREFA</button>
-            <a class="text-sm text-primary" href="../app.html">Voltar</a>
+    <main id="new-task" class="w-full gap-1 items-center justify-center overflow-hidden flex flex-col h-screen">
+        <header class="flex w-full items-center  justify-center gap-1 p-1 pt-5">
+            <a class="glass rounded-xl p-1 text-xl text-primary" href="../app.html">←</a>
+            <h1 class="text-xl text-center">ADICIONAR TAREFA</h1>
+        </header>
+        <section id="messages" class="chat-messages overflow-hidden flex flex-col gap-1 p-1 w-full"></section>
+        <form id="chat-form" class="flex w-full items-center gap-1 p-1">
+            <div class="flex w-full items-center gap-1 glass rounded-xl p-1">
+                <input class="chat-input w-full p-1 text-primary border-none" placeholder="Digite sua resposta" type="text" name="message" id="message" autocomplete="off">
+                <button class="chat-send rounded-xl p-1" type="submit">Enviar</button>
+            </div>
         </form>
     </main>
 </body>
