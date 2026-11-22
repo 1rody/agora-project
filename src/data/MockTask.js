@@ -1,9 +1,9 @@
-/** @import { Profile } from "./MockProfile.js" */
+/** @import 
 
 /**
  * @typedef {Object} Task
  * @property {string} id
- * @property {string} profileId   liga a task ao perfil
+ * @property {string} profileId   
  * @property {string} name
  * @property {string} description
  * @property {string} startDate
@@ -28,3 +28,9 @@ export const tasks = [
 
 export const getTasksByProfile = (profileId) =>
     tasks.filter((task) => task.profileId === profileId);
+
+export const addTask = (task) => {
+    const newTask = { id: `t${tasks.length + 1}`, ...task };
+    tasks.push(newTask);
+    return newTask;
+};
