@@ -21,7 +21,7 @@ const tasksSection = document.querySelector("#tasks");
 myTasks.forEach((task) => {
     const card = document.createElement("article");
     card.innerHTML = `
-        <div class="flex flex-col p-2 glass-second rounded-md">
+        <div class="flex flex-col p-2 glass rounded-md">
             <div class="w-full text-right">
                 <h3 class="text-xl text-primary" data-field="name"></h3>
                 <span data-field="priority"></span>
