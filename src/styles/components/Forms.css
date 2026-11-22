@@ -1,5 +1,7 @@
 #login-form {
+        padding: .2rem 2rem;
     fieldset {
+
         transition: .2s;
         input {
             background-color: var(--background-color);
@@ -30,6 +32,41 @@
                 padding: .2rem;
                 background-color: var(--background-color);
             }
+        }
+    }
+    #other-login {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        button {
+
+            padding: .8rem 2.4rem;
+            appearance: none;
+            border-style: none;
+            border-radius: 1.5rem;
+            background-color: var(--foreground-color);
+        }
+    }
+    .form-btns {
+        margin-top: 2rem;
+        gap: .5rem;
+        button {
+            appearance: none;
+            border-style: none;
+            border-radius: 1.1rem;
+            color: var(--foreground-color);
+            padding: 1rem 3rem;
+            background-color: var(--blue-pure);
+            transition: .2s;
+            &:hover {
+                opacity: 80%;
+            }
+            &:active {
+                transform: scale(0.9);
+            }
+        }
+        a {
+            color: var(--blue-pure);
+            border-bottom: 1px solid var(--blue-pure);
         }
     }
 }

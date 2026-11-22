@@ -17,14 +17,25 @@
 <body class="google-sans">
     <main id="login" class="w-full gap-1 overflow-hidden flex flex-col h-screen">
         <form id="login-form" class="p-1 flex text-primary flex-col items-center h-screen justify-center">
-            <fieldset class="border-none flex flex-col w-fit">
+            <div class="flex w-full items-center inversion-colors justify-center">
+            <img src="../assets//icons/logo.png" alt="Agora logo">
+            </div>
+            <div id="other-login" class="inversion-colors">
+              <button>G</button>
+              <button>G</button>
+              <button>G</button>
+            </div>
+            <fieldset class="border-none flex flex-col w-full">
                 <label for="email" class="text-primary text-sm">EMAIL</label>
                 <input class="p-1 rounded-md text-primary bg-background" placeholder="jhon@mail.com" type="email" name="email" id="login-mail">
             </fieldset>
-            <fieldset class="border-none flex flex-col w-fit">
+            <fieldset class="border-none flex flex-col w-full">
                 <label for="password" class="text-primary text-sm">EMAIL</label>
                 <input class="p-1 rounded-md text-primary bg-background" placeholder="123#4$*Aa1213" type="password" name="password" id="login-mail">
             </fieldset>
+            <div class="flex items-center justify-center form-btns">
+                <button>Entrar</button> <p>ou</p> <a href="">Registre-se</a>
+            </div>
         </form>
     </main>
 </body>

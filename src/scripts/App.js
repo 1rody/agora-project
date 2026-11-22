@@ -23,7 +23,7 @@ myTasks.forEach((task) => {
     card.innerHTML = `
         <div class="flex flex-col p-2 glass-second rounded-md">
             <div class="w-full text-right">
-                <h3 class="text-xl" data-field="name"></h3>
+                <h3 class="text-xl text-primary" data-field="name"></h3>
                 <span data-field="priority"></span>
             </div>
             <div class="flex">
