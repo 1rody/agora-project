@@ -8,10 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="../styles/Globals.css">
+    <link rel="stylesheet" href="../src//styles/Globals.css">
     <script type="module">
         import { addAccount } from "../data/AccountMock.js";
-
         const form = document.querySelector("#register-form");
 
         //ao enviar cria a conta no array e mostra a mensagem
@@ -30,22 +29,33 @@
 </head>
 <body class="google-sans">
     <main id="register" class="w-full gap-1 overflow-hidden flex flex-col h-screen">
-        <form id="register-form" class="p-1 flex text-primary flex-col items-center h-screen justify-center">
-            <fieldset class="border-none flex flex-col w-fit">
-                <label for="name" class="text-primary text-sm">NOME</label>
+        <form  id="register-form" class="p-1 form-style  flex text-primary flex-col items-center h-screen justify-center">
+            <div class="flex w-full items-center inversion-colors justify-center">
+                <img src="../assets//icons/logo.png" alt="Agora logo">
+            </div>
+            <div id="other-login" class="inversion-colors">
+              <button>G</button>
+              <button>G</button>
+              <button>G</button>
+            </div>
+            <fieldset class="border-none flex flex-col w-full">
+                <label for="name" class="text-primary text-sm">EMAIL</label>
                 <input class="p-1 rounded-md text-primary bg-background" placeholder="Jhon" type="text" name="name" id="name" required>
             </fieldset>
-            <fieldset class="border-none flex flex-col w-fit">
-                <label for="email" class="text-primary text-sm">EMAIL</label>
+            <fieldset class="border-none flex flex-col w-full">
+                <label for="email" class="text-primary text-sm">SENHA</label>
                 <input class="p-1 rounded-md text-primary bg-background" placeholder="jhon@mail.com" type="email" name="email" id="email" required>
             </fieldset>
-            <fieldset class="border-none flex flex-col w-fit">
-                <label for="password" class="text-primary text-sm">SENHA</label>
+            <fieldset class="border-none flex flex-col w-full">
+                <label for="password" class="text-primary text-sm">REPITA A SENHA</label>
                 <input class="p-1 rounded-md text-primary bg-background" placeholder="123#4$*Aa1213" type="password" name="password" id="password" required>
             </fieldset>
-            <p class="text-sm" data-field="message"></p>
-            <button class="primary-btn" type="submit">CRIAR CONTA</button>
-            <a class="text-sm text-primary" href="../login.html">Voltar para o login</a>
+            <div class="form-btns flex items-center justify-center">
+                <button class="primary-btn" type="submit">Registrar-se</button>
+                <p>ou</p>
+                <a class="text-sm text-primary" href="./login.html">login</a>
+            </div>
+
         </form>
     </main>
 </body>
