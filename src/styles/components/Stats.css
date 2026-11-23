@@ -2,6 +2,23 @@
     color: var(--link-blue);
 }
 
+/* ritmo vertical do figma: rotulo colado no conteudo e grupos mais afastados */
+#stats {
+    gap: .4rem;
+}
+#stats > .stat-cards {
+    margin-bottom: 1.35rem;
+}
+#next {
+    gap: .4rem;
+}
+#next > #recommendation {
+    margin-top: .45rem;
+}
+#tasks {
+    padding-top: 0;
+}
+
 /* cards das estatisticas (numero + barras + legenda) */
 .stat-cards {
     gap: .5rem;
@@ -46,13 +63,19 @@
 #recommendation {
     min-height: 5rem;
     margin-left: 0;
+    .task-title {
+        font-size: 1rem;
+    }
+    [data-field="date"] {
+        white-space: nowrap;
+    }
 }
 .recommendation-reason {
     display: flex;
     align-items: flex-start;
     justify-content: flex-end;
     gap: .3rem;
-    max-width: 14rem;
+    max-width: 13rem;
     img {
         width: .8rem;
         height: .8rem;
