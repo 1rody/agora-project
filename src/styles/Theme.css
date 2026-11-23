@@ -15,6 +15,10 @@
     --blue-pure: #3867E5;
     --link-blue: #3A55FF;
 
+    --priority-high: #FF4949;
+    --priority-medium: #FFCF5E;
+    --priority-low: #5ED16A;
+
     --mood-good: #4F78FF;
     --mood-neutral: #A29AFF;
     --mood-bad: #92DCFF;

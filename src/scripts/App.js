@@ -72,6 +72,31 @@ moods.forEach((mood) => {
     moodSelector.append(button);
 });
 
+//formata minutos em horas (220 -> 3h 40 min)
+const formatMinutes = (total) => {
+    const hours = Math.floor(total / 60);
+    const minutes = total % 60;
+    return hours ? `${hours}h ${minutes} min` : `${minutes} min`;
+};
+
+//prioridade em portugues e na cor do figma
+const priorityLabels = { low: "BAIXA", medium: "MEDIA", high: "ALTA" };
+const showPriority = (element, priority) => {
+    element.textContent = priorityLabels[priority];
+    element.classList.add(`priority-${priority}`);
+};
+
+//exibicao do tempo ate a proxima tarefa e da recomendacao para agora
+const next = document.querySelector("#next");
+next.querySelector('[data-field="timeUntilNext"]').textContent = formatMinutes(usage.timeUntilNext);
+showPriority(next.querySelector('[data-field="recommendedPriority"]'), usage.recommendedPriority);
+
+const recommendation = next.querySelector("#recommendation");
+recommendation.querySelector('[data-field="name"]').textContent = usage.recommendation.name;
+recommendation.querySelector('[data-field="estimatedTime"]').textContent = formatMinutes(usage.recommendation.estimatedTime);
+recommendation.querySelector('[data-field="date"]').textContent = usage.recommendation.date;
+recommendation.querySelector('[data-field="reason"]').textContent = usage.recommendation.reason;
+
 //exibicao das tarefas
 const tasksSection = document.querySelector("#tasks");
 
