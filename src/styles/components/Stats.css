@@ -59,6 +59,12 @@
     }
 }
 
+@media (prefers-color-scheme: dark) {
+    .recommendation-reason img {
+        filter: invert(1);
+    }
+}
+
 /* textos compartilhados com os cards de tarefa */
 .task-time {
     font-size: 1rem;
