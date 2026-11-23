@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../../styles/Globals.css">
+    <script type="module" src="../../scripts/App.js"></script>
+
+    <title>Agora - Configuracoes</title>
+</head>
+<body class="google-sans">
+    <main id="settings" class="flex flex-col overflow-hidden w-full">
+        <header class="flex w-full items-center justify-center pt-5">
+            <a class="glass rounded-xl p-1 text-xl text-primary" href="../../app.html">←</a>
+            <h1 class="text-xl text-center">CONFIGURACOES</h1>
+        </header>
+        <section id="profile" class="flex  p-2  ">
+            <div class="profile-info glass w-full flex items-center justify-between gap-2 p-2 rounded-md">
+                <p class="text-2xl" data-field="name"></p> 
+                <p>Membroo desde: <span>data</span></p>
+            </div>
+        </section>
+        <section id="security" class="p-2">
+            <p>Verificacao de dois fatores <span id="status"><a href="">ATIVA</a></span></p>
+            <p>Email de recuperacao <span id="status"><a href="">ADICIONAR</a></span></p>
+        </section>
+    </main>
+</body>
+</html>
