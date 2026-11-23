@@ -21,7 +21,7 @@
     animation: fadeOut 0.5s ease-in-out;
 }
 
-@keygframes slideIn {
+@keyframes slideIn {
     from {
         transform: translateY(-100%);
     }
