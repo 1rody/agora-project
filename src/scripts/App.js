@@ -81,9 +81,13 @@ const formatMinutes = (total) => {
 
 //prioridade em portugues e na cor do figma
 const priorityLabels = { low: "BAIXA", medium: "MEDIA", high: "ALTA" };
+//o chat de nova tarefa salva o que foi digitado (baixa, media, alta), entao aceita os dois jeitos
+const priorityAliases = { baixa: "low", media: "medium", "média": "medium", alta: "high" };
 const showPriority = (element, priority) => {
-    element.textContent = priorityLabels[priority];
-    element.classList.add(`priority-${priority}`);
+    const text = String(priority).trim().toLowerCase();
+    const key = priorityAliases[text] ?? text;
+    element.textContent = priorityLabels[key] ?? text.toUpperCase();
+    element.classList.add(`priority-${key}`);
 };
 
 //exibicao do tempo ate a proxima tarefa e da recomendacao para agora
