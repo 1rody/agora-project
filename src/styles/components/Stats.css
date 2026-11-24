@@ -1,0 +1,152 @@
+.link-blue {
+    color: var(--link-blue);
+}
+
+/* ritmo vertical do figma: rotulo colado no conteudo e grupos mais afastados */
+#stats {
+    gap: .4rem;
+}
+#stats > .stat-cards {
+    margin-bottom: 1.35rem;
+}
+#next {
+    gap: .4rem;
+}
+#next > #recommendation {
+    margin-top: .45rem;
+}
+#tasks {
+    padding-top: 0;
+}
+
+/* cards das estatisticas (numero + barras + legenda) */
+.stat-cards {
+    gap: .5rem;
+}
+.stat-card {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: .3rem;
+    padding: .8rem;
+    margin-left: 0;
+}
+.stat-top {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: .6rem;
+}
+.stat-number {
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1;
+}
+.stat-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+}
+.stat-bar {
+    width: 4px;
+    border-radius: 30px;
+    background-color: var(--text-color);
+}
+
+/* tempo ate a proxima tarefa + recomendacao */
+.next-time {
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1;
+}
+#recommendation {
+    min-height: 5rem;
+    margin-left: 0;
+    .task-title {
+        font-size: 1rem;
+    }
+    [data-field="date"] {
+        white-space: nowrap;
+    }
+}
+.recommendation-reason {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    gap: .3rem;
+    max-width: 13rem;
+    img {
+        width: .8rem;
+        height: .8rem;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .recommendation-reason img {
+        filter: invert(1);
+    }
+}
+
+/* textos compartilhados com os cards de tarefa */
+.task-time {
+    font-size: 1rem;
+    font-style: italic;
+    font-weight: 600;
+}
+.task-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.priority {
+    font-weight: 800;
+}
+.priority-high {
+    color: var(--priority-high);
+}
+.priority-medium {
+    color: var(--priority-medium);
+}
+.priority-low {
+    color: var(--priority-low);
+}
+
+/* seletor de disposicao do dia (3 carinhas) */
+.mood-selector {
+    display: flex;
+    height: 61px;
+    overflow: hidden;
+    border-radius: 29px;
+    border: 1px solid rgba(57, 85, 105, 0.15);
+    backdrop-filter: blur(2px);
+}
+.mood-btn {
+    appearance: none;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-style: none;
+    cursor: pointer;
+    background-color: var(--mood-color);
+    transition: .2s;
+    &[data-mood="good"] {
+        --mood-color: var(--mood-good);
+    }
+    &[data-mood="neutral"] {
+        --mood-color: var(--mood-neutral);
+    }
+    &[data-mood="bad"] {
+        --mood-color: var(--mood-bad);
+    }
+    &:hover {
+        opacity: 80%;
+    }
+    &:active {
+        transform: scale(0.96);
+    }
+    &[aria-pressed="true"] {
+        box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.75);
+    }
+}
