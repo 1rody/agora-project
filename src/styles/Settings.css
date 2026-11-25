@@ -174,8 +174,8 @@
 }
 
 /* Segurança: títulos de formulário e botões como no Figma */
-.settings-section > h2:not(.settings-row h2) {
-    font-size: .65rem;
+.settings-section:has(.settings-form) > h2 {
+    font-size: .75rem;
     font-weight: 400;
     text-align: right;
 }
