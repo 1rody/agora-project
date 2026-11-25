@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="../styles/Globals.css">
+        <link rel="stylesheet" href="../styles/Tasks.css">
+        <script type="module" src="../scripts/Session.js"></script>
+        <script type="module" src="../scripts/Tasks.js"></script>
+        <title>Tarefas | Agora</title>
+    </head>
+    <body class="google-sans" data-requires-session>
+        <p class="p-2" data-startup-message role="status">
+            <span>Se a página não carregar, abra o projeto pelo servidor HTTP local e acesse src/login.html.</span>
+            <a class="text-primary" href="../login.html">Ir para o login</a>
+        </p>
+        <div data-startup-content hidden>
+            <main class="tasks-page" data-page="tasks">
+                <header class="tasks-header">
+                    <h1>TAREFAS</h1>
+                    <a class="tasks-pill" href="./History.html">HISTÓRICO</a>
+                </header>
+                <section class="tasks-filters" aria-label="Filtros de tarefas">
+                    <label>
+                        ORDENAR
+                        <select id="task-order">
+                            <option value="az">A–Z</option>
+                            <option value="deadline">Prazo</option>
+                            <option value="priority">Prioridade</option>
+                        </select>
+                    </label>
+                    <label>
+                        PRIORIDADE
+                        <select id="task-priority">
+                            <option value="">Todas</option>
+                            <option value="low">Baixa</option>
+                            <option value="medium">Média</option>
+                            <option value="high">Alta</option>
+                        </select>
+                    </label>
+                    <label>
+                        DATA
+                        <input id="task-date" type="date">
+                    </label>
+                </section>
+                <p id="task-feedback" role="status"></p>
+                <section aria-label="Lista de tarefas">
+                    <div id="task-list" class="tasks-list"></div>
+                    <p id="task-empty" role="status" hidden>Nenhuma tarefa encontrada.</p>
+                </section>
+            </main>
+            <footer class="fixed bottom-0 w-full items-center justify-center flex">
+                <nav id="navigation" class="flex items-center w-full justify-between p-1" aria-label="Navegação principal">
+                    <ol class="flex items-center gap-1 glass rounded-xl p-1 justify-around">
+                        <li>
+                            <a href="../app.html">
+                                <img src="../../assets/icons/Brand.svg" alt="Início">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./Tarefas.html" aria-current="page">
+                                <img src="../../assets/icons/List.svg" alt="Tarefas">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./settings/Settings.html">
+                                <img class="anim-rotating" src="../../assets/icons/Settings.svg" alt="Configurações">
+                            </a>
+                        </li>
+                    </ol>
+                    <ol class="glass rounded-xl p-1">
+                        <li>
+                            <a href="./NewTask.html">
+                                <img src="../../assets/icons/Create.svg" alt="Adicionar tarefa">
+                            </a>
+                        </li>
+                    </ol>
+                </nav>
+            </footer>
+            <template id="task-card">
+                <article class="task-card glass rounded-md p-2">
+                    <a class="task-card-link" data-field="link">
+                        <span class="task-time" data-field="estimatedTime"></span>
+                        <span class="task-card-heading">
+                            <strong class="task-title" data-field="name"></strong>
+                            <span class="text-xs priority" data-field="priority"></span>
+                        </span>
+                        <span class="text-xs" data-field="period"></span>
+                    </a>
+                    <div class="task-btns flex items-center gap-1">
+                        <button class="secondary-btn glass" data-action="complete" type="button">CONCLUIR</button>
+                        <button class="primary-btn" data-action="advance" type="button">ADIANTAR</button>
+                    </div>
+                </article>
+            </template>
+        </div>
+    </body>
+</html>

@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="../styles/Globals.css">
+    <link rel="stylesheet" href="../styles/History.css">
     <script type="module" src="../scripts/Session.js"></script>
     <script type="module">
         import { getSessionProfileId, showStartupContent } from "../scripts/Session.js";
@@ -39,6 +40,7 @@
                 item.querySelector('[data-field="taskName"]').textContent = entry.taskName;
                 item.querySelector('[data-field="date"]').textContent = formatTaskPeriod(entry);
                 item.querySelector('[data-field="priority"]').textContent = PRIORITY_LABELS[entry.priority] ?? "";
+                item.querySelector('[data-field="priority"]').dataset.priority = entry.priority ?? "";
                 item.querySelector('[data-field="action"]').textContent = entry.action === "concluída"
                     ? `Concluído em ${entry.tempoReal ?? 0} min` : labels[entry.action];
                 return item;
@@ -65,48 +67,15 @@
         <span>Se a página não carregar, abra o projeto pelo servidor HTTP local e acesse src/login.html.</span> <a class="text-primary" href="../login.html">Ir para o login</a>
     </p>
     <div data-startup-content hidden>
-    <main id="history" class="w-full gap-1 items-center flex flex-col h-screen">
-        <header class="flex w-full items-center justify-center gap-1 p-1 pt-5">
-            <a class="glass rounded-xl p-1 text-xl text-primary" href="../app.html" aria-label="Voltar para o início">←</a>
-            <h1 class="text-xl text-center">HISTÓRICO</h1>
-        </header>
-        <section class="flex w-full flex-wrap gap-1 p-1" aria-label="Filtros do histórico">
-            <label class="flex flex-col text-sm text-primary" for="history-order">Ordenar
-                <select id="history-order" class="chat-input rounded-md p-1">
-                    <option value="recent">Mais recentes</option>
-                    <option value="az">A–Z</option>
-                </select>
-            </label>
-            <label class="flex flex-col text-sm text-primary" for="history-priority">Prioridade
-                <select id="history-priority" class="chat-input rounded-md p-1">
-                    <option value="">Todas</option>
-                    <option value="high">Alta</option>
-                    <option value="medium">Média</option>
-                    <option value="low">Baixa</option>
-                </select>
-            </label>
-            <label class="flex flex-col text-sm text-primary" for="history-date">Data do registro
-                <input id="history-date" class="chat-input rounded-md p-1" type="date">
-            </label>
+    <main id="history" class="w-full flex flex-col">
+        <header class="history-header"><a class="history-back glass" href="./Tarefas.html" aria-label="Voltar para tarefas">←</a><h1>HISTÓRICO</h1></header>
+        <section class="history-filters" aria-label="Filtros do histórico">
+            <label>ORDENAR<select id="history-order" aria-label="Ordenar histórico"><option value="recent">Mais recentes</option><option value="az">A–Z</option></select></label>
+            <label>PRIORIDADE<select id="history-priority" aria-label="Filtrar por prioridade"><option value="">Todas</option><option value="high">Alta</option><option value="medium">Média</option><option value="low">Baixa</option></select></label>
+            <label>DATA<input id="history-date" type="date" aria-label="Filtrar por data do registro"></label>
         </section>
-        <section class="w-full p-1">
-            <div id="history-list" class="glass rounded-md flex flex-col gap-1 p-1 w-full"></div>
-            <p id="history-empty" class="text-sm p-1" role="status" hidden>Nenhuma tarefa encontrada.</p>
-        </section>
-        <template id="history-entry">
-            <article class="flex w-full flex-wrap items-center justify-between gap-1 p-1">
-                <div class="flex flex-col">
-                    <p class="text-md" data-field="taskName"></p>
-                    <span class="text-sm text-secondary" data-field="date"></span>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-sm" data-field="priority"></span>
-                    <span class="text-sm" data-field="action"></span>
-                </div>
-            </article>
-        </template>
+        <section class="history-results" aria-label="Tarefas no histórico"><div id="history-list" class="flex flex-col gap-1"></div><p id="history-empty" role="status" hidden>Nenhuma tarefa encontrada.</p></section>
+        <template id="history-entry"><article class="history-card glass rounded-md"><div class="history-card-title"><h2 class="task-title" data-field="taskName"></h2><span class="priority text-xs" data-field="priority"></span></div><span class="task-time" data-field="action"></span><p class="text-xs" data-field="date"></p></article></template>
     </main>
-    </div>
-</body>
+    <footer class="fixed bottom-0 w-full items-center justify-center flex"><nav id="navigation" class="flex items-center w-full justify-between p-1" aria-label="Navegação principal"><ol class="flex items-center gap-1 glass rounded-xl p-1 justify-around"><li><a href="../app.html"><img src="../../assets/icons/Brand.svg" alt="Início"></a></li><li><a href="./Tarefas.html" aria-current="page"><img src="../../assets/icons/List.svg" alt="Tarefas"></a></li><li><a href="./settings/Settings.html"><img class="anim-rotating" src="../../assets/icons/Settings.svg" alt="Configurações"></a></li></ol><ol class="glass rounded-xl p-1"><li><a href="./NewTask.html"><img src="../../assets/icons/Create.svg" alt="Adicionar tarefa"></a></li></ol></nav></footer>
 
-</html>

@@ -43,8 +43,31 @@ export function setupUpcomingTasks(container) {
     const empty = container.querySelector("#upcoming-empty");
     const template = document.querySelector("#upcoming-task");
     const feedback = container.querySelector("#task-feedback");
-    let cancelConfirmation = () => {};
+    const { bindActions, cancelConfirmation: cancelActions } = createTaskActions(feedback);
 
+    return function renderUpcoming(tasks) {
+        cancelActions();
+        const future = getUpcomingTasks(tasks, NOW);
+        const advancedId = getAdvancedTaskId();
+        const current = tasks.filter((task) => isInQueue(task) && (task.id === advancedId
+            || task.status === "em andamento"
+            || (task.scheduled && parseTaskDate(task.startDate)?.getTime() === NOW.getTime())));
+        const currentIds = new Set(current.map((task) => task.id));
+
+        const cards = [...current, ...future.filter((task) => !currentIds.has(task.id))].map((task) => {
+            const card = template.content.cloneNode(true);
+            fillTaskCard(card, task);
+            bindActions(card, task, !currentIds.has(task.id));
+            return card;
+        });
+
+        list.replaceChildren(...cards);
+        empty.hidden = cards.length > 0;
+    };
+}
+
+export function createTaskActions(feedback) {
+    let cancelConfirmation = () => {};
     function completeTask(id) {
         const tasks = getTasksByProfile(getSessionProfileId());
         const task = tasks.find((item) => item.id === id && isInQueue(item));
@@ -84,49 +107,31 @@ export function setupUpcomingTasks(container) {
         updateTask(id, { startDate: NOW.toISOString() });
     }
 
-    return function renderUpcoming(tasks) {
-        cancelConfirmation();
-        const future = getUpcomingTasks(tasks, NOW);
-        const advancedId = getAdvancedTaskId();
-        const current = tasks.filter((task) => isInQueue(task) && (task.id === advancedId
-            || task.status === "em andamento"
-            || (task.scheduled && parseTaskDate(task.startDate)?.getTime() === NOW.getTime())));
-        const currentIds = new Set(current.map((task) => task.id));
 
-        const cards = [...current, ...future.filter((task) => !currentIds.has(task.id))].map((task) => {
-            const card = template.content.cloneNode(true);
-            fillTaskCard(card, task);
-            const complete = card.querySelector('[data-action="complete"]');
-            const advance = card.querySelector('[data-action="advance"]');
-            const canAdvance = !currentIds.has(task.id);
+    function bindActions(card, task, canAdvance = true) {
+        const complete = card.querySelector('[data-action="complete"]');
+        const advance = card.querySelector('[data-action="advance"]');
+        advance.hidden = !canAdvance;
+        let confirmationTimer;
+        function resetConfirmation() {
+            clearTimeout(confirmationTimer);
+            confirmationTimer = undefined;
+            complete.textContent = "CONCLUIR";
             advance.hidden = !canAdvance;
-            let confirmationTimer;
-
-            function resetConfirmation() {
-                clearTimeout(confirmationTimer);
-                confirmationTimer = undefined;
-                complete.textContent = "CONCLUIR";
-                advance.hidden = !canAdvance;
+        }
+        complete.addEventListener("click", () => {
+            if (confirmationTimer !== undefined) {
+                resetConfirmation();
+                completeTask(task.id);
+                return;
             }
-
-            complete.addEventListener("click", () => {
-                if (confirmationTimer !== undefined) {
-                    resetConfirmation();
-                    completeTask(task.id);
-                    return;
-                }
-
-                cancelConfirmation();
-                complete.textContent = "CONFIRMAR CONCLUSÃO";
-                advance.hidden = true;
-                confirmationTimer = setTimeout(resetConfirmation, CONFIRMATION_MS);
-                cancelConfirmation = resetConfirmation;
-            });
-            advance.addEventListener("click", () => advanceTask(task.id));
-            return card;
+            cancelConfirmation();
+            complete.textContent = "CONFIRMAR CONCLUSÃO";
+            advance.hidden = true;
+            confirmationTimer = setTimeout(resetConfirmation, CONFIRMATION_MS);
+            cancelConfirmation = resetConfirmation;
         });
-
-        list.replaceChildren(...cards);
-        empty.hidden = cards.length > 0;
-    };
+        advance.addEventListener("click", () => advanceTask(task.id));
+    }
+    return { bindActions, cancelConfirmation: () => cancelConfirmation() };
 }

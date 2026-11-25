@@ -13,6 +13,7 @@ function readAccounts() {
 const normalizeEmail = (email) => String(email).trim().toLowerCase();
 
 export const getProfile = (id) => readAccounts().find((profile) => profile.id === id);
+export const getAccountByEmail = (email) => readAccounts().find((profile) => normalizeEmail(profile.email) === normalizeEmail(email));
 export const emailExists = (email) => readAccounts().some((profile) => normalizeEmail(profile.email) === normalizeEmail(email));
 export const login = (email, password) => readAccounts().find((profile) =>
     normalizeEmail(profile.email) === normalizeEmail(email) && profile.password === password);
