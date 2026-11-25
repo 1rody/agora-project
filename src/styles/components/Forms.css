@@ -1,13 +1,23 @@
 .form-style  {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 26rem;
+        margin-inline: auto;
         padding: .2rem 2rem;
     fieldset {
 
         transition: .2s;
+        min-width: 0;
         input {
+            box-sizing: border-box;
+            width: 100%;
+            height: 3.1rem;
             background-color: var(--background-color);
             border: 1px solid;
             border-color: rgba(82, 84, 94, 0.527);
-            padding: 1rem;
+            padding: 0 1rem;
+            font-family: inherit;
+            font-size: 1rem;
             appearance: none;
         }
         label {
@@ -16,7 +26,7 @@
             font-weight: bolder;
             top: 2.2rem;
             transition: .2s;
-            width: full;
+            width: fit-content;
             padding: .2rem;
             border-radius: 2rem;
             background-color: var(--background-color);
@@ -34,9 +44,15 @@
             }
         }
     }
+    div:has(> input[type="checkbox"]) {
+        margin-top: 1rem;
+    }
     #other-login {
         margin-top: 2rem;
         margin-bottom: 2rem;
+        display: flex;
+        justify-content: center;
+        gap: .5rem;
         button {
 
             padding: .8rem 2.4rem;
@@ -49,6 +65,8 @@
     .form-btns {
         margin-top: 2rem;
         gap: .5rem;
+        flex-wrap: wrap;
+        justify-content: center;
         button {
             appearance: none;
             border-style: none;
