@@ -1,4 +1,4 @@
-﻿.auth-page { min-height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; padding: 1.5rem 0; }
+.auth-page { min-height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; padding: 1.5rem 0; }
 .auth-form { display: flex; flex-direction: column; align-items: center; }
 .auth-form fieldset, .recovery fieldset { width: 100%; }
 .auth-logo { display: block; width: min(11rem, 60%); height: auto; margin: 0 auto; }
@@ -23,6 +23,7 @@
 .terms-page { max-width: 28rem; height: 100vh; margin: 0 auto; box-sizing: border-box; }
 .terms-page header a { display: grid; place-items: center; min-width: 44px; min-height: 44px; box-sizing: border-box; }
 .terms-panel { overflow-y: auto; }
+.terms-panel > section { flex-shrink: 0; }
 .terms-panel p, .terms-panel li { line-height: 1.5; }
 .entering-overlay { position: fixed; z-index: 1000; inset: 0; background: var(--background-color); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; }
 .entering-progress { width: min(10rem, 50vw); height: 6px; background: var(--stroke-color); border-radius: 1rem; overflow: hidden; }
@@ -32,3 +33,4 @@
 :where(.auth-page, .terms-page) :focus-visible { outline: 3px solid var(--link-blue); outline-offset: 3px; }
 [hidden] { display: none !important; }
 .entering-overlay p { position: absolute; bottom: 4rem; font-size: .85rem; font-weight: 700; letter-spacing: .04em; }
+.recovery .form-style fieldset { text-align: left; }

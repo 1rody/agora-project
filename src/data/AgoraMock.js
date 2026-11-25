@@ -8,9 +8,9 @@ export const mockAccount = {
     email: "jhon@mail.com",
     password: "123#4$*Aa1213",
     lastTimeOnline: "14/11/2026 : 14:07",
-    birthDate: "2003-04-15",
+    birthDate: "2000-06-10",
     pronouns: "Ele/dele",
-    memberSince: "2026-11-14",
+    memberSince: "2026-01-14",
 };
 
 export const mockSecurity = {

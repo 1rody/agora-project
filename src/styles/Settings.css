@@ -11,8 +11,8 @@
     margin-bottom: 2rem;
 }
 .settings-header h1 {
-    font-size: 1.4rem;
-    font-weight: 700;
+    font-size: clamp(1.4rem, 7vw, 1.9rem);
+    font-weight: 400;
 }
 .settings-back {
     display: grid;
