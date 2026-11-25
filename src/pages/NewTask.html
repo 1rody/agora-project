@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../styles/Globals.css">
     <script type="module">
         import { addTask } from "../data/MockTask.js";
+        import { getCurrentProfile } from "../data/AccountMock.js";
 
         const questions = [
             { field: "name", text: "Qual o nome da tarefa?" },
@@ -58,7 +59,7 @@
                     return;
                 }
 
-                const task = addTask({ profileId: "01", ...answers, estimatedTime: Number(answers.estimatedTime) || 0 });
+                const task = addTask({ profileId: getCurrentProfile().id, ...answers, estimatedTime: Number(answers.estimatedTime) || 0 });
                 showMessage(`Tarefa criada: ${task.name}`, "bot");
             }, 400);
         });

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../../../styles/Globals.css">
+    <script type="module">
+        import { getCurrentProfile, updateAccount } from "../../../data/AccountMock.js";
+
+        const profile = getCurrentProfile();
+        const form = document.querySelector("#password-form");
+        const message = form.querySelector('[data-field="message"]');
+
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            const password = form.elements.password.value;
+
+            if (form.elements.current.value !== profile.password) {
+                message.textContent = "Senha atual incorreta";
+                return;
+            }
+
+            if (password !== form.elements.confirm.value) {
+                message.textContent = "As senhas nao conferem";
+                return;
+            }
+
+            updateAccount(profile.id, { password });
+            form.reset();
+            message.textContent = "Senha atualizada";
+        });
+    </script>
+
+    <title>Agora - Alterar senha</title>
+</head>
+<body class="google-sans">
+    <main id="change-pass" class="flex flex-col overflow-hidden w-full">
+        <header class="flex w-full items-center justify-center gap-1 p-1 pt-5">
+            <a class="glass rounded-xl p-1 text-xl text-primary" href="../Settings.html">←</a>
+            <h1 class="text-xl text-center">ALTERAR SENHA</h1>
+        </header>
+        <section class="p-2">
+            <form id="password-form" class="form-style flex flex-col items-center text-primary">
+                <fieldset class="border-none flex flex-col w-full">
+                    <label for="current" class="text-primary text-sm">SENHA ATUAL</label>
+                    <input class="p-1 rounded-md text-primary bg-background" placeholder="123#4$*Aa1213" type="password" name="current" id="current" required>
+                </fieldset>
+                <fieldset class="border-none flex flex-col w-full">
+                    <label for="password" class="text-primary text-sm">NOVA SENHA</label>
+                    <input class="p-1 rounded-md text-primary bg-background" placeholder="123#4$*Aa1213" type="password" name="password" id="password" required>
+                </fieldset>
+                <fieldset class="border-none flex flex-col w-full">
+                    <label for="confirm" class="text-primary text-sm">REPITA A SENHA</label>
+                    <input class="p-1 rounded-md text-primary bg-background" placeholder="123#4$*Aa1213" type="password" name="confirm" id="confirm" required>
+                </fieldset>
+                <p class="text-sm pt-5" data-field="message"></p>
+                <div class="form-btns flex flex-col items-center justify-center w-full">
+                    <button class="w-full" type="submit">Salvar</button>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

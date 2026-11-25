@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../../styles/Globals.css">
+    <script type="module">
+        import { getCurrentProfile, getProfileByEmail, updateAccount } from "../../data/AccountMock.js";
+
+        const profile = getCurrentProfile();
+        const emailForm = document.querySelector("#email-form");
+        const otpForm = document.querySelector("#otp-form");
+        const otpButton = otpForm.querySelector("#otp-toggle");
+        const otpCodeBox = otpForm.querySelector("#otp-code");
+        const otpMessage = otpForm.querySelector('[data-field="message"]');
+        let otpCode = "";
+
+        const renderOtp = () => {
+            otpForm.querySelector("#status").value = profile.otp ? "ATIVA" : "DESATIVADA";
+            otpButton.textContent = profile.otp ? "Desativar" : "Ativar";
+        };
+
+        renderOtp();
+        emailForm.querySelector('[data-field="email"]').textContent = profile.email;
+
+        emailForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            const email = emailForm.elements.email.value.trim();
+            const message = emailForm.querySelector('[data-field="message"]');
+
+            if (emailForm.elements.password.value !== profile.password) {
+                message.textContent = "Senha incorreta";
+                return;
+            }
+
+            if (getProfileByEmail(email)) {
+                message.textContent = "Email ja cadastrado";
+                return;
+            }
+
+            updateAccount(profile.id, { email });
+            emailForm.querySelector('[data-field="email"]').textContent = email;
+            message.textContent = "Email atualizado";
+            emailForm.reset();
+        });
+
+        otpForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            if (profile.otp) {
+                updateAccount(profile.id, { otp: false });
+                otpMessage.textContent = "";
+                renderOtp();
+                return;
+            }
+
+            if (otpCodeBox.hidden) {
+                otpCode = String(Math.floor(100000 + Math.random() * 900000));
+                otpForm.querySelector('[data-field="code"]').textContent = `Codigo enviado para ${profile.email}: ${otpCode}`;
+                otpCodeBox.hidden = false;
+                otpButton.textContent = "Confirmar";
+                return;
+            }
+
+            if (otpForm.elements.code.value.trim() !== otpCode) {
+                otpMessage.textContent = "Codigo invalido";
+                return;
+            }
+
+            updateAccount(profile.id, { otp: true });
+            otpForm.elements.code.value = "";
+            otpMessage.textContent = "";
+            otpCodeBox.hidden = true;
+            renderOtp();
+        });
+    </script>
+
+    <title>Agora - Seguranca</title>
+</head>
+<body class="google-sans">
+    <main id="security" class="flex flex-col overflow-hidden w-full">
+        <header class="flex w-full items-center justify-center gap-1 p-1 pt-5">
+            <a class="glass rounded-xl p-1 text-xl text-primary" href="./Settings.html">←</a>
+            <h1 class="text-xl text-center">SEGURANCA</h1>
+        </header>
+        <section id="otp" class="p-2">
+            <p class="text-sm text-secondary">VERIFICACAO DE DOIS FATORES</p>
+            <form id="otp-form" class="form-style flex flex-col items-center text-primary">
+                <fieldset class="border-none flex flex-col w-full">
+                    <label for="status" class="text-primary text-sm">STATUS</label>
+                    <input class="p-1 rounded-md text-primary bg-background" type="text" id="status" readonly>
+                </fieldset>
+                <div class="w-full" id="otp-code" hidden>
+                    <fieldset class="border-none flex flex-col w-full">
+                        <label for="code" class="text-primary text-sm">CODIGO</label>
+                        <input class="p-1 rounded-md text-primary bg-background" placeholder="000000" type="text" inputmode="numeric" maxlength="6" name="code" id="code">
+                    </fieldset>
+                    <p class="text-sm text-secondary" data-field="code"></p>
+                </div>
+                <p class="text-sm pt-5" data-field="message"></p>
+                <div class="form-btns flex flex-col items-center justify-center w-full">
+                    <button class="w-full" type="submit" id="otp-toggle"></button>
+                </div>
+            </form>
+        </section>
+        <section id="change-email" class="p-2">
+            <p class="text-sm text-secondary">EMAIL</p>
+            <form id="email-form" class="form-style flex flex-col items-center text-primary">
+                <p class="text-sm w-full">Atual: <span data-field="email"></span></p>
+                <fieldset class="border-none flex flex-col w-full">
+                    <label for="email" class="text-primary text-sm">NOVO EMAIL</label>
+                    <input class="p-1 rounded-md text-primary bg-background" placeholder="jhon@mail.com" type="email" name="email" id="email" required>
+                </fieldset>
+                <fieldset class="border-none flex flex-col w-full">
+                    <label for="password" class="text-primary text-sm">SENHA</label>
+                    <input class="p-1 rounded-md text-primary bg-background" placeholder="123#4$*Aa1213" type="password" name="password" id="password" required>
+                </fieldset>
+                <p class="text-sm pt-5" data-field="message"></p>
+                <div class="form-btns flex flex-col items-center justify-center w-full">
+                    <button class="w-full" type="submit">Alterar email</button>
+                    <p>ou</p>
+                    <a class="text-sm text-primary" href="./recovery/ChangePass.html">alterar senha</a>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

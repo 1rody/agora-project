@@ -11,11 +11,12 @@
     <link rel="stylesheet" href="../styles/Globals.css">
     <script type="module">
         import { getHistoryByProfile } from "../data/HistoryMock.js";
+        import { getCurrentProfile } from "../data/AccountMock.js";
 
         const labels = { created: "Criada", deleted: "Apagada" };
         const list = document.querySelector("#history-list");
 
-        getHistoryByProfile("01").forEach((entry) => {
+        getHistoryByProfile(getCurrentProfile().id).forEach((entry) => {
             const item = document.createElement("article");
             item.className = "flex w-full items-center justify-between p-1";
             item.innerHTML = `

@@ -9,25 +9,81 @@
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="../../styles/Globals.css">
-    <script type="module" src="../../scripts/App.js"></script>
+    <script type="module">
+        import { getCurrentProfile, updateAccount } from "../../data/AccountMock.js";
+
+        const profile = getCurrentProfile();
+        const info = document.querySelector("#profile");
+        const security = document.querySelector("#security-form");
+        const form = document.querySelector("#profile-form");
+
+        const render = () => {
+            info.querySelector('[data-field="name"]').textContent = profile.name;
+            info.querySelector('[data-field="createdAt"]').textContent = profile.createdAt;
+            security.querySelector("#otp").value = profile.otp ? "ATIVA" : "DESATIVADA";
+            security.querySelector("#email").value = profile.email;
+        };
+
+        render();
+        form.elements.name.value = profile.name;
+
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            const name = form.elements.name.value.trim();
+            if (!name) return;
+
+            updateAccount(profile.id, { name });
+            render();
+            form.querySelector('[data-field="message"]').textContent = "Perfil atualizado";
+        });
+    </script>
 
     <title>Agora - Configuracoes</title>
 </head>
 <body class="google-sans">
-    <main id="settings" class="flex flex-col overflow-hidden w-full">
-        <header class="flex w-full items-center justify-center pt-5">
+    <main id="settings" class="w-full gap-1 items-center flex flex-col h-screen">
+        <header class="flex w-full items-center justify-center gap-1 p-1 pt-5">
             <a class="glass rounded-xl p-1 text-xl text-primary" href="../../app.html">←</a>
             <h1 class="text-xl text-center">CONFIGURACOES</h1>
         </header>
-        <section id="profile" class="flex  p-2  ">
-            <div class="profile-info glass w-full flex items-center justify-between gap-2 p-2 rounded-md">
-                <p class="text-2xl" data-field="name"></p> 
-                <p>Membroo desde: <span>data</span></p>
-            </div>
+        <section id="profile" class="w-full p-1">
+            <form id="profile-form" class="form-style flex flex-col items-center text-primary">
+                <div class="profile-info glass w-full flex items-center justify-between gap-1 p-2 rounded-md">
+                    <p class="text-2xl" data-field="name"></p>
+                    <p class="text-sm">Membro desde: <span data-field="createdAt"></span></p>
+                </div>
+                <p class="text-sm text-secondary w-full pt-5">PERFIL</p>
+                <fieldset class="border-none flex flex-col w-full">
+                    <label for="name" class="text-primary text-sm">NOME</label>
+                    <input class="p-1 rounded-md text-primary bg-background" placeholder="Jhon" type="text" name="name" id="name" required>
+                </fieldset>
+                <p class="text-sm pt-5" data-field="message"></p>
+                <div class="form-btns flex flex-col items-center justify-center w-full">
+                    <button class="w-full" type="submit">Salvar</button>
+                </div>
+            </form>
         </section>
-        <section id="security" class="p-2">
-            <p>Verificacao de dois fatores <span id="status"><a href="">ATIVA</a></span></p>
-            <p>Email de recuperacao <span id="status"><a href="">ADICIONAR</a></span></p>
+        <section id="security" class="w-full p-1">
+            <form id="security-form" class="form-style flex flex-col items-center text-primary">
+                <p class="text-sm text-secondary w-full">SEGURANCA</p>
+                <fieldset class="border-none flex flex-col w-full">
+                    <label for="otp" class="text-primary text-sm">VERIFICACAO DE DOIS FATORES</label>
+                    <input class="p-1 rounded-md text-primary bg-background" type="text" id="otp" readonly>
+                </fieldset>
+                <fieldset class="border-none flex flex-col w-full">
+                    <label for="email" class="text-primary text-sm">EMAIL</label>
+                    <input class="p-1 rounded-md text-primary bg-background" type="email" id="email" readonly>
+                </fieldset>
+                <fieldset class="border-none flex flex-col w-full">
+                    <label for="password" class="text-primary text-sm">SENHA</label>
+                    <input class="p-1 rounded-md text-primary bg-background" type="password" id="password" value="********" readonly>
+                </fieldset>
+                <div class="form-btns flex flex-col items-center justify-center w-full">
+                    <button class="w-full" type="submit" formaction="./Security.html">Alterar seguranca</button>
+                    <button class="w-full" type="submit" formaction="./recovery/ChangePass.html">Alterar senha</button>
+                </div>
+            </form>
         </section>
     </main>
 </body>

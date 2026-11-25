@@ -1,7 +1,7 @@
-import { getProfile } from "../data/AccountMock.js";
+import { getCurrentProfile } from "../data/AccountMock.js";
 import { getTasksByProfile } from "../data/MockTask.js";
 
-const profile = getProfile("01");
+const profile = getCurrentProfile();
 const myTasks = getTasksByProfile(profile.id);
 
 console.log(profile.name, myTasks);
