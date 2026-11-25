@@ -1,7 +1,7 @@
 import { getSessionProfileId, showStartupContent } from "./Session.js";
 import { getProfile } from "../data/AccountMock.js";
 import { NOW } from "../data/AgoraMock.js";
-import { PRIORITY_LABELS, getTasksByProfile, subscribeToTasks } from "../data/MockTask.js";
+import { PRIORITY_LABELS, getTasksByProfile, subscribeToTasks, updateTask } from "../data/MockTask.js";
 import { formatDateTime, parseTaskDate } from "../data/TaskDates.js";
 import {
     fitsAvailableTime, getAvailableMinutes, getNextCommitment, getStats, isInQueue, recommendTask,
@@ -43,12 +43,28 @@ function setupHome(home) {
     const timer = home.querySelector("#task-timer");
     const elapsed = timer.querySelector('[role="timer"]');
     let timerInterval;
+    const SKIPPED_KEY = "agora-skipped-recommendations";
+    const skipped = () => new Set(JSON.parse(sessionStorage.getItem(SKIPPED_KEY) ?? "[]"));
+    const start = home.querySelector("#recommendation-start");
+    const next = home.querySelector("#recommendation-next");
+    let currentId = null;
+    let runningTask = null;
+    start.addEventListener("click", () => {
+        if (!currentId) return;
+        if (runningTask) updateTask(currentId, { status: "concluída", tempoReal: Math.floor(elapsedSince(runningTask.timerStartedAt) / 60000) });
+        else updateTask(currentId, { status: "em andamento", timerStartedAt: Date.now() });
+    });
+    next.addEventListener("click", () => {
+        if (!currentId) return;
+        sessionStorage.setItem(SKIPPED_KEY, JSON.stringify([...skipped(), currentId]));
+        renderHome();
+    });
     bindDisposition(home.querySelector('[aria-labelledby="disposition-title"] [role="group"]'), (changed) => {
         if (changed) clearAdvancedTask();
         renderHome();
     });
 
-    fillFields(header, { name: profile.name, lastTimeOnline: formatDateTime(NOW) });
+    fillFields(header, { name: profile.name.split(" ")[0].toLocaleUpperCase("pt-BR") + ".", lastTimeOnline: formatDateTime(NOW) });
     header.querySelector("time").dateTime = NOW.toISOString();
 
     function renderTimer(running) {
@@ -67,7 +83,11 @@ function setupHome(home) {
         const tasks = getTasksByProfile(profile.id);
         const commitment = getNextCommitment(tasks, NOW);
         const available = getAvailableMinutes(commitment, NOW);
-        const result = recommendTask(tasks, NOW, getDisposition());
+        let result = recommendTask(tasks.filter((task) => !skipped().has(task.id)), NOW, getDisposition());
+        if (!result.task && skipped().size) {
+            sessionStorage.removeItem(SKIPPED_KEY);
+            result = recommendTask(tasks, NOW, getDisposition());
+        }
         const running = tasks.find((task) => task.status === "em andamento");
         const advancedId = getAdvancedTaskId();
         const advanced = tasks.find((task) => task.id === advancedId && isInQueue(task));
@@ -84,6 +104,10 @@ function setupHome(home) {
         });
         nextTask.querySelector('[data-field="priority"]').dataset.priority = commitment?.task.priority ?? "";
 
+        currentId = currentTask?.id ?? null;
+        runningTask = running ?? null;
+        start.textContent = running ? "CONCLUIR" : "INICIAR";
+        next.hidden = Boolean(running);
         recommendation.hidden = !currentTask;
         recommendationEmpty.hidden = Boolean(currentTask);
         if (currentTask) {
