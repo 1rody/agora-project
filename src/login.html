@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,35 +9,42 @@
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="./styles/Globals.css">
-    <script type="module" src="./scripts/App.js"></script>
+    <script type="module" src="./scripts/Auth.js"></script>
 
 
     <title>Agora</title>
 </head>
 <body class="google-sans">
+    <p class="p-2" data-startup-message role="status">
+        <span>Se a página não carregar, abra o projeto pelo servidor HTTP local e acesse src/login.html.</span>
+    </p>
+    <div data-startup-content hidden>
     <main id="login" class="w-full gap-1 overflow-hidden flex flex-col h-screen">
-        <form id="login-form" class="p-1 form-style flex text-primary flex-col items-center h-screen justify-center">
+        <form id="login-form" novalidate class="p-1 form-style flex text-primary flex-col items-center h-screen justify-center">
             <div class="flex w-full items-center inversion-colors justify-center">
-            <img src="../assets//icons/logo.png" alt="Agora logo">
+            <img src="../assets/icons/logo.png" alt="Agora logo">
             </div>
             <div id="other-login" class="inversion-colors">
-              <button>G</button>
-              <button>G</button>
-              <button>G</button>
+              <button type="button" data-social-login aria-label="Entrar com Google">G</button>
+              <button type="button" data-social-login aria-label="Entrar com opção social 2">G</button>
+              <button type="button" data-social-login aria-label="Entrar com opção social 3">G</button>
             </div>
             <fieldset class="border-none flex flex-col w-full">
-                <label for="email" class="text-primary text-sm">EMAIL</label>
-                <input class="p-1 rounded-md text-primary bg-background" placeholder="jhon@mail.com" type="email" name="email" id="login-mail">
+                <label for="login-mail" class="text-primary text-sm">EMAIL</label>
+                <input class="p-1 rounded-md text-primary bg-background" type="email" name="email" id="login-mail" autocomplete="username" required>
             </fieldset>
             <fieldset class="border-none flex flex-col w-full">
-                <label for="password" class="text-primary text-sm">EMAIL</label>
-                <input class="p-1 rounded-md text-primary bg-background" placeholder="123#4$*Aa1213" type="password" name="password" id="login-mail">
+                <label for="login-password" class="text-primary text-sm">SENHA</label>
+                <input class="p-1 rounded-md text-primary bg-background" type="password" name="password" id="login-password" autocomplete="current-password" required>
             </fieldset>
             <div class="flex items-center justify-center form-btns">
-                <button>Entrar</button> <p>ou</p> <a href="./Register.html">Registre-se</a>
+                <button type="submit">ENTRAR</button> <p>OU</p> <a href="./Register.html">REGISTRE-SE</a>
             </div>
+            <p class="text-sm" role="status" data-field="message"></p>
+            <a class="text-sm text-primary p-1" href="./pages/RecoverAccount.html">Esqueceu sua senha?</a>
         </form>
     </main>
+    </div>
 </body>
 
 </html>

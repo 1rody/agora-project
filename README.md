@@ -22,14 +22,19 @@ Projeto desenvolvido pela empresa fictícia **SALVATECH**, para a matéria de Pr
 │   ├── forms.css <br/>
 │   └── misc.css <br/>
 └── effects/ <br/>
-└── liquid-glass.csstext## Como rodar <br/>
+└── liquid-glass.css
+
+## Como rodar
 
 ### Localhost
 
-1. Baixe o [Visual Studio Code](https://code.visualstudio.com/)
-2. Instale a extensão **Live Preview**
-3. Clique com o botão direito no `index.html` → **Show Preview**
-4. Acesse o endereço gerado (geralmente `http://localhost:xxxx`)
+Na raiz do projeto, inicie o servidor HTTP local:
+
+```sh
+python3 -m http.server 8000 --bind 127.0.0.1
+```
+
+Abra [a tela de login](http://127.0.0.1:8000/src/login.html). Também é possível abrir `src/login.html` com o Live Preview ou o Live Server. O navegador precisa carregar as páginas via HTTP para executar os módulos JavaScript.
 
 ### Deploy (Vercel)
 

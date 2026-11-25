@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../../styles/Globals.css">
+    <script type="module" src="../../scripts/Session.js"></script>
+    <title>Agora - Suporte</title>
+    <script type="module">
+        import { showStartupContent } from "../../scripts/Session.js";
+        import { PROFILE_ID } from "../../data/AgoraMock.js";
+        import { getTasksByProfile, subscribeToTasks } from "../../data/MockTask.js";
+        import { bindDisposition } from "../../scripts/Disposition.js";
+        import { clearAdvancedTask, setupUpcomingTasks } from "../../scripts/UpcomingTasks.js";
+
+        const titles = { contato: "FALE CONOSCO", sobre: "SOBRE", ajuda: "PRECISA DE AJUDA?" };
+        const title = document.querySelector("#support-title");
+        const back = document.querySelector("#support-back");
+        const sections = document.querySelectorAll("[data-support-view]");
+        const fromHome = new URLSearchParams(location.search).get("origem") === "inicio";
+
+        function showSection() {
+            const hash = location.hash.slice(1);
+            const view = Object.hasOwn(titles, hash) ? hash : "suporte";
+            for (const section of sections) section.hidden = section.id !== view;
+            title.textContent = titles[view] ?? "SUPORTE";
+            back.href = fromHome ? "../../app.html" : view === "suporte" ? "../settings/Settings.html" : "#suporte";
+        }
+
+        const contact = document.querySelector("#contact-form");
+        contact.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const feedback = contact.querySelector('[role="status"]');
+            if (!contact.elements.message.value.trim()) {
+                feedback.textContent = "Escreva sua mensagem.";
+                return;
+            }
+            contact.reset();
+            feedback.textContent = "Mensagem recebida nesta simulação.";
+        });
+
+        const renderUpcoming = setupUpcomingTasks(document.querySelector("#tasks"));
+        const refreshTasks = () => renderUpcoming(getTasksByProfile(PROFILE_ID));
+        bindDisposition(document.querySelector('#sobre [role="group"]'), (changed) => {
+            if (changed) clearAdvancedTask();
+        });
+        subscribeToTasks(refreshTasks);
+        window.addEventListener("pageshow", (event) => {
+            if (event.persisted) refreshTasks();
+        });
+        refreshTasks();
+
+        window.addEventListener("hashchange", showSection);
+        showSection();
+        showStartupContent();
+    </script>
+</head>
+<body class="google-sans" data-requires-session>
+    <p class="p-2" data-startup-message role="status">
+        <span>Se a página não carregar, abra o projeto pelo servidor HTTP local e acesse src/login.html.</span> <a class="text-primary" href="../../login.html">Ir para o login</a>
+    </p>
+    <div data-startup-content hidden>
+    <main class="flex flex-col w-full">
+        <header class="flex w-full items-center justify-center gap-1 pt-5">
+            <a id="support-back" class="glass rounded-xl p-1 text-xl text-primary" href="../settings/Settings.html" aria-label="Voltar">←</a>
+            <h1 id="support-title" class="text-xl text-center">SUPORTE</h1>
+        </header>
+        <nav id="suporte" class="p-2" data-support-view aria-label="Suporte">
+            <ol class="flex flex-col gap-1">
+                <li><a class="glass flex rounded-md p-1 text-primary" href="#contato">Fale conosco</a></li>
+                <li><a class="glass flex rounded-md p-1 text-primary" href="#sobre">Como funciona?</a></li>
+                <li><a class="glass flex rounded-md p-1 text-primary" href="#ajuda">Precisa de ajuda?</a></li>
+            </ol>
+        </nav>
+        <section id="contato" class="p-2" data-support-view hidden>
+            <form id="contact-form" class="glass rounded-md p-2 flex flex-col gap-1" novalidate>
+                <label class="text-primary flex flex-col" for="support-message">Mensagem
+                    <textarea id="support-message" name="message" class="chat-input rounded-md p-1" rows="5" required></textarea>
+                </label>
+                <button class="primary-btn w-fit" type="submit">ENVIAR MENSAGEM</button>
+                <p class="text-sm" role="status"></p>
+            </form>
+        </section>
+        <section id="sobre" class="p-2" data-support-view hidden>
+            <div class="glass rounded-md p-2 flex flex-col gap-1">
+                <p>O Agora ajuda você a decidir o que faz sentido fazer agora.</p>
+                <p>A recomendação considera sua disposição, o tempo até o próximo compromisso, a prioridade, a urgência e o prazo de cada tarefa.</p>
+                <p>Uma tarefa vinculada fica disponível assim que todas as suas dependências forem concluídas.</p>
+            </div>
+            <section class="p-1" aria-labelledby="disposition-title">
+                <div class="glass rounded-md p-2 flex flex-col gap-1">
+                    <h2 id="disposition-title" class="text-md">Sua disposição hoje</h2>
+                    <div class="flex justify-around items-center gap-1" role="group" aria-labelledby="disposition-title">
+                        <button class="glass rounded-xl border-none p-1" type="button" data-disposition="high" aria-label="Disposição alta" aria-pressed="false" title="Alta">
+                            <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
+                                <circle data-active-ring cx="20" cy="20" r="18" fill="none" stroke="#3867E5" stroke-width="2" visibility="hidden"/>
+                                <circle cx="20" cy="20" r="14" fill="#2445AB"/>
+                                <circle cx="15" cy="17" r="1.5" fill="#fff"/>
+                                <circle cx="25" cy="17" r="1.5" fill="#fff"/>
+                                <path d="M14 22c3 5 9 5 12 0" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                        <button class="bg-foreground rounded-xl border-none p-1" type="button" data-disposition="medium" aria-label="Disposição média" aria-pressed="true" title="Média">
+                            <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
+                                <circle data-active-ring cx="20" cy="20" r="18" fill="none" stroke="#8056C8" stroke-width="2"/>
+                                <circle cx="20" cy="20" r="14" fill="#8056C8"/>
+                                <circle cx="15" cy="17" r="1.5" fill="#fff"/>
+                                <circle cx="25" cy="17" r="1.5" fill="#fff"/>
+                                <path d="M16 23h8" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                        <button class="glass rounded-xl border-none p-1" type="button" data-disposition="low" aria-label="Disposição baixa" aria-pressed="false" title="Baixa">
+                            <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
+                                <circle data-active-ring cx="20" cy="20" r="18" fill="none" stroke="#5DA9E9" stroke-width="2" visibility="hidden"/>
+                                <circle cx="20" cy="20" r="14" fill="#8CC9FC"/>
+                                <circle cx="15" cy="17" r="1.5" fill="#173366"/>
+                                <circle cx="25" cy="17" r="1.5" fill="#173366"/>
+                                <path d="M15 25c3-3 7-3 10 0" fill="none" stroke="#173366" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </section>
+            <section id="tasks" class="p-1 gap-1 flex flex-col">
+                <h2 class="text-sm">A seguir hoje</h2>
+                <div id="upcoming-list" class="flex flex-col gap-1"></div>
+                <p id="task-feedback" class="text-sm" role="status"></p>
+                <p id="upcoming-empty" class="text-sm" hidden>Nenhuma tarefa agendada para mais tarde hoje.</p>
+            </section>
+        </section>
+        <section id="ajuda" class="p-2" data-support-view hidden>
+            <div class="flex flex-col gap-1">
+                <details class="glass rounded-md p-2">
+                    <summary class="text-primary">Por que uma tarefa está bloqueada?</summary>
+                    <p class="p-1">Conclua as tarefas vinculadas para liberá-la.</p>
+                </details>
+                <details class="glass rounded-md p-2">
+                    <summary class="text-primary">Onde vejo o tempo que levei para concluir uma tarefa?</summary>
+                    <p class="p-1">Abra o Histórico para consultar o tempo registrado nas tarefas concluídas.</p>
+                </details>
+                <details class="glass rounded-md p-2">
+                    <summary class="text-primary">Como atualizo a recomendação?</summary>
+                    <p class="p-1">Na tela inicial, selecione o rosto que corresponde à sua disposição de hoje.</p>
+                </details>
+            </div>
+        </section>
+    </main>
+    <template id="upcoming-task">
+        <article class="flex flex-col p-2 glass rounded-md">
+            <div class="w-full text-right">
+                <h3 class="text-lg text-primary" data-field="name"></h3>
+                <span data-field="priority"></span>
+            </div>
+            <div class="flex w-full flex-wrap items-center justify-between gap-1">
+                <div class="flex flex-col">
+                    <span data-field="estimatedTime"></span>
+                    <p class="text-sm" data-field="period"></p>
+                </div>
+                <div class="task-btns task-btns-full flex flex-wrap items-center gap-1">
+                    <button class="secondary-btn glass" data-action="complete" type="button">CONCLUIR</button>
+                    <button class="primary-btn" data-action="advance" type="button">ADIANTAR</button>
+                </div>
+            </div>
+        </article>
+    </template>
+    </div>
+</body>
+</html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,43 +9,105 @@
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="../styles/Globals.css">
+    <script type="module" src="../scripts/Session.js"></script>
     <script type="module">
-        import { getHistoryByProfile } from "../data/HistoryMock.js";
+        import { showStartupContent } from "../scripts/Session.js";
+        import { PROFILE_ID } from "../data/AgoraMock.js";
+        import { getHistoryByProfile, isTaskHistoryStatus } from "../data/HistoryMock.js";
+        import { PRIORITY_LABELS, getTasksByProfile, subscribeToTasks } from "../data/MockTask.js";
+        import { dateKey, formatTaskPeriod, parseTaskDate } from "../data/TaskDates.js";
 
-        const labels = { created: "Criada", deleted: "Apagada" };
+        const labels = { adiada: "Adiada", cancelada: "Cancelada" };
         const list = document.querySelector("#history-list");
+        const template = document.querySelector("#history-entry");
+        const empty = document.querySelector("#history-empty");
+        const order = document.querySelector("#history-order");
+        const priority = document.querySelector("#history-priority");
+        const date = document.querySelector("#history-date");
+        const alphabetical = new Intl.Collator("pt-BR", { sensitivity: "base" });
 
-        getHistoryByProfile("01").forEach((entry) => {
-            const item = document.createElement("article");
-            item.className = "flex w-full items-center justify-between p-1";
-            item.innerHTML = `
-                <div class="flex flex-col">
-                    <p class="text-md" data-field="taskName"></p>
-                    <span class="text-sm text-secondary" data-field="date"></span>
-                </div>
-                <span class="text-sm" data-field="action"></span>
-            `;
-            item.querySelector('[data-field="taskName"]').textContent = entry.taskName;
-            item.querySelector('[data-field="date"]').textContent = entry.date;
-            item.querySelector('[data-field="action"]').textContent = labels[entry.action];
+        function renderHistory() {
+            const entries = getHistoryByProfile(PROFILE_ID, getTasksByProfile(PROFILE_ID))
+                .filter((entry) => isTaskHistoryStatus(entry.action))
+                .filter((entry) => !priority.value || entry.priority === priority.value)
+                .filter((entry) => !date.value || dateKey(entry.date) === date.value)
+                .sort(order.value === "az"
+                    ? (first, second) => alphabetical.compare(first.taskName, second.taskName)
+                    : (first, second) => parseTaskDate(second.date) - parseTaskDate(first.date));
 
-            list.append(item);
+            const items = entries.map((entry) => {
+                const item = template.content.cloneNode(true);
+                item.querySelector('[data-field="taskName"]').textContent = entry.taskName;
+                item.querySelector('[data-field="date"]').textContent = formatTaskPeriod(entry);
+                item.querySelector('[data-field="priority"]').textContent = PRIORITY_LABELS[entry.priority] ?? "";
+                item.querySelector('[data-field="action"]').textContent = entry.action === "concluída"
+                    ? `Concluído em ${entry.tempoReal ?? 0} min` : labels[entry.action];
+                return item;
+            });
+
+            list.replaceChildren(...items);
+            empty.hidden = items.length > 0;
+        }
+
+        for (const filter of [order, priority, date]) filter.addEventListener("change", renderHistory);
+        subscribeToTasks(renderHistory);
+        window.addEventListener("pageshow", (event) => {
+            if (event.persisted) renderHistory();
         });
+        renderHistory();
+        showStartupContent();
     </script>
 
 
     <title>Agora</title>
 </head>
-<body class="google-sans">
+<body class="google-sans" data-requires-session>
+    <p class="p-2" data-startup-message role="status">
+        <span>Se a página não carregar, abra o projeto pelo servidor HTTP local e acesse src/login.html.</span> <a class="text-primary" href="../login.html">Ir para o login</a>
+    </p>
+    <div data-startup-content hidden>
     <main id="history" class="w-full gap-1 items-center flex flex-col h-screen">
         <header class="flex w-full items-center justify-center gap-1 p-1 pt-5">
-            <a class="glass rounded-xl p-1 text-xl text-primary" href="../app.html">←</a>
-            <h1 class="text-xl text-center">HISTORICO</h1>
+            <a class="glass rounded-xl p-1 text-xl text-primary" href="../app.html" aria-label="Voltar para o início">←</a>
+            <h1 class="text-xl text-center">HISTÓRICO</h1>
         </header>
+        <section class="flex w-full flex-wrap gap-1 p-1" aria-label="Filtros do histórico">
+            <label class="flex flex-col text-sm text-primary" for="history-order">Ordenar
+                <select id="history-order" class="chat-input rounded-md p-1">
+                    <option value="recent">Mais recentes</option>
+                    <option value="az">A–Z</option>
+                </select>
+            </label>
+            <label class="flex flex-col text-sm text-primary" for="history-priority">Prioridade
+                <select id="history-priority" class="chat-input rounded-md p-1">
+                    <option value="">Todas</option>
+                    <option value="high">Alta</option>
+                    <option value="medium">Média</option>
+                    <option value="low">Baixa</option>
+                </select>
+            </label>
+            <label class="flex flex-col text-sm text-primary" for="history-date">Data do registro
+                <input id="history-date" class="chat-input rounded-md p-1" type="date">
+            </label>
+        </section>
         <section class="w-full p-1">
             <div id="history-list" class="glass rounded-md flex flex-col gap-1 p-1 w-full"></div>
+            <p id="history-empty" class="text-sm p-1" role="status" hidden>Nenhuma tarefa encontrada.</p>
         </section>
+        <template id="history-entry">
+            <article class="flex w-full flex-wrap items-center justify-between gap-1 p-1">
+                <div class="flex flex-col">
+                    <p class="text-md" data-field="taskName"></p>
+                    <span class="text-sm text-secondary" data-field="date"></span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-sm" data-field="priority"></span>
+                    <span class="text-sm" data-field="action"></span>
+                </div>
+            </article>
+        </template>
     </main>
+    </div>
 </body>
 
 </html>

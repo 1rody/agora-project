@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,26 +9,66 @@
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="../../styles/Globals.css">
-    <script type="module" src="../../scripts/App.js"></script>
+    <script type="module" src="../../scripts/Session.js"></script>
+    <script type="module" src="../../scripts/Settings.js"></script>
 
-    <title>Agora - Configuracoes</title>
+    <title>Agora - Configurações</title>
 </head>
-<body class="google-sans">
+<body class="google-sans" data-requires-session>
+    <p class="p-2" data-startup-message role="status">
+        <span>Se a página não carregar, abra o projeto pelo servidor HTTP local e acesse src/login.html.</span> <a class="text-primary" href="../../login.html">Ir para o login</a>
+    </p>
+    <div data-startup-content hidden>
     <main id="settings" class="flex flex-col overflow-hidden w-full">
-        <header class="flex w-full items-center justify-center pt-5">
-            <a class="glass rounded-xl p-1 text-xl text-primary" href="../../app.html">←</a>
-            <h1 class="text-xl text-center">CONFIGURACOES</h1>
+        <header class="flex w-full items-center justify-center gap-1 pt-5">
+            <a id="settings-back" class="glass rounded-xl p-1 text-xl text-primary" href="../../app.html" aria-label="Voltar">←</a>
+            <h1 id="settings-title" class="text-xl text-center">CONFIGURAÇÕES</h1>
         </header>
-        <section id="profile" class="flex  p-2  ">
-            <div class="profile-info glass w-full flex items-center justify-between gap-2 p-2 rounded-md">
-                <p class="text-2xl" data-field="name"></p> 
-                <p>Membroo desde: <span>data</span></p>
+        <section id="profile" class="p-2">
+            <div class="profile-info glass flex items-center justify-between flex-wrap gap-1 p-2 rounded-md">
+                <p class="text-2xl" data-field="name"></p>
+                <p>Membro desde <span data-field="memberSince"></span></p>
+                <p data-field="age"></p>
+                <p data-field="pronouns"></p>
             </div>
+            <div class="p-1">
+                <p>Verificação de dois fatores: <span id="status"></span></p>
+                <p>E-mail de recuperação: <a class="text-primary" href="./Security.html#email-recuperacao">Adicionar</a></p>
+            </div>
+            <nav id="settings-menu" class="p-1 pt-5" aria-label="Configurações">
+                <ol class="flex flex-col gap-1">
+                    <li><a class="glass flex rounded-md p-1 text-primary" href="#perfil">Perfil</a></li>
+                    <li class="glass rounded-md p-1">
+                        <a class="text-primary" href="./Security.html">Segurança</a>
+                        <ol class="p-1 flex flex-col gap-1">
+                            <li><a class="text-primary" href="./Security.html#dispositivos">Gerenciar dispositivos</a></li>
+                            <li><a class="text-primary" href="./Security.html#senha-recuperacao">Senha e recuperação</a></li>
+                        </ol>
+                    </li>
+                    <li><span class="glass flex rounded-md p-1 text-secondary" aria-disabled="true">Privacidade e dados</span></li>
+                    <li><a class="glass flex rounded-md p-1 text-primary" href="../support/Support.html">Suporte</a></li>
+                </ol>
+            </nav>
         </section>
-        <section id="security" class="p-2">
-            <p>Verificacao de dois fatores <span id="status"><a href="">ATIVA</a></span></p>
-            <p>Email de recuperacao <span id="status"><a href="">ADICIONAR</a></span></p>
+        <section id="perfil" class="p-2" hidden>
+            <form id="profile-form" class="glass rounded-md form-style" novalidate>
+                <fieldset class="border-none flex flex-col">
+                    <label class="text-primary text-sm" for="profile-name">Nome</label>
+                    <input id="profile-name" name="name" class="rounded-md text-primary" type="text" autocomplete="name" required>
+                </fieldset>
+                <fieldset class="border-none flex flex-col">
+                    <label class="text-primary text-sm" for="profile-birth-date">Data de nascimento</label>
+                    <input id="profile-birth-date" name="birthDate" class="rounded-md text-primary" type="date" autocomplete="bday" required>
+                </fieldset>
+                <fieldset class="border-none flex flex-col">
+                    <label class="text-primary text-sm" for="profile-pronouns">Pronomes</label>
+                    <input id="profile-pronouns" name="pronouns" class="rounded-md text-primary" type="text">
+                </fieldset>
+                <div class="form-btns p-1"><button class="primary-btn w-fit" type="submit">SALVAR</button></div>
+                <p class="text-sm" role="status"></p>
+            </form>
         </section>
     </main>
+    </div>
 </body>
 </html>

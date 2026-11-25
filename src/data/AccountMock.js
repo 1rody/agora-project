@@ -1,3 +1,5 @@
+import { mockAccount } from "./AgoraMock.js";
+
 /**
  * @typedef {Object} Profile
  * @property {string} id
@@ -8,17 +10,7 @@
  */
 
 /** @type {Profile[]} */
-
-console.log("MockProfile carregou");
-export const accounts = [
-    {
-        id: "01",
-        name: "Lucas",
-        email: "jhon@mail.com",
-        password: "123#4$*Aa1213",
-        lastTimeOnline: "14/11/2026 : 14:07",
-    },
-];
+export const accounts = [mockAccount];
 
 export const getProfile = (id) =>  accounts.find((profile) => profile.id === id);
 

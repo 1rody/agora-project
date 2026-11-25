@@ -1,64 +1,109 @@
+import { showStartupContent } from "./Session.js";
 import { getProfile } from "../data/AccountMock.js";
-import { getTasksByProfile } from "../data/MockTask.js";
+import { NOW, PROFILE_ID } from "../data/AgoraMock.js";
+import { PRIORITY_LABELS, getTasksByProfile, subscribeToTasks } from "../data/MockTask.js";
+import { formatDateTime, parseTaskDate } from "../data/TaskDates.js";
+import {
+    fitsAvailableTime, getAvailableMinutes, getNextCommitment, getStats, isInQueue, recommendTask,
+} from "./Recommendation.js";
 
-const profile = getProfile("01");
-const myTasks = getTasksByProfile(profile.id);
+import { bindDisposition, getDisposition } from "./Disposition.js";
+import {
+    clearAdvancedTask, elapsedSince, fillFields, fillTaskCard, getAdvancedTaskId, hasPendingDependencies, setupUpcomingTasks,
+} from "./UpcomingTasks.js";
 
-console.log(profile.name, myTasks);
+function formatAvailableTime(available) {
+    if (!Number.isFinite(available)) return "Sem compromisso agendado";
+    const minutes = Math.floor(available);
+    const hours = Math.floor(minutes / 60);
+    const remainder = minutes % 60;
+    return hours > 0 ? `${hours}h ${remainder} min` : `${remainder} min`;
+}
 
+function formatReason(reasons) {
+    if (!reasons.length) return "Tarefa disponível para agora.";
+    const text = reasons.join(" e ");
+    return text[0].toUpperCase() + text.slice(1) + ".";
+}
 
-//exibicao do perfil
-const header = document.querySelector("#profile");
-header.querySelector('[data-field="name"]').textContent = profile.name;
-header.querySelector('[data-field="lastTimeOnline"]').textContent = profile.lastTimeOnline;
+function formatElapsed(milliseconds) {
+    const seconds = Math.floor(milliseconds / 1000);
+    const minutes = Math.floor(seconds / 60);
+    return `${String(minutes).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+}
 
-//exibicao das tarefas
-const tasksSection = document.querySelector("#tasks");
+function setupHome(home) {
+    const profile = getProfile(PROFILE_ID);
+    const header = home.querySelector("#profile");
+    const stats = home.querySelector("#stats");
+    const nextTask = home.querySelector("#next-task");
+    const recommendation = home.querySelector("#recommended-task");
+    const recommendationEmpty = home.querySelector("#recommendation-empty");
+    const renderUpcoming = setupUpcomingTasks(home.querySelector("#tasks"));
+    const timer = home.querySelector("#task-timer");
+    const elapsed = timer.querySelector('[role="timer"]');
+    let timerInterval;
+    bindDisposition(home.querySelector('[aria-labelledby="disposition-title"] [role="group"]'), (changed) => {
+        if (changed) clearAdvancedTask();
+        renderHome();
+    });
 
+    fillFields(header, { name: profile.name, lastTimeOnline: formatDateTime(NOW) });
+    header.querySelector("time").dateTime = NOW.toISOString();
 
-//gera a task quando ela for criada (apos uma criada ela e adicionada ao array sempre comecndo com 0 se ha task perfeito;
-//se ha task task surge e e criada seguindo a estrutura do article)
-myTasks.forEach((task, index) => {
-    const isNow = index === 0;
-    const card = document.createElement("article");
-    card.innerHTML = isNow ? `
-        <div class="flex flex-col p-2 glass rounded-md">
-            <div class="flex w-full items-center justify-between gap-1">
-                <div class="flex flex-col">
-                    <span data-field="estimatedTime"></span>
-                    <p class="text-sm">21/07 as 11:00 ate 22/07</p>
-                </div>
-                <div class="text-right">
-                    <h3 class="text-lg text-primary" data-field="name"></h3>
-                    <span data-field="priority"></span>
-                </div>
-            </div>
-            <div class="task-btns task-btns-full flex w-full items-center gap-1 pt-5">
-                <button class="secondary-btn glass" type="button">Iniciar</button>
-                <button class="primary-btn" type="button">Proxima</button>
-            </div>
-        </div>
-    ` : `
-        <div class="flex flex-col p-2 glass rounded-md">
-            <div class="w-full text-right">
-                <h3 class="text-lg text-primary" data-field="name"></h3>
-                <span data-field="priority"></span>
-            </div>
-            <div class="flex w-full items-center justify-between gap-1 pt-5">
-                <div class="flex flex-col">
-                    <span data-field="estimatedTime"></span>
-                    <p class="text-sm">21/07 as 11:00 ate 22/07</p>
-                </div>
-                <div class="task-btns flex items-center gap-1">
-                    <button class="secondary-btn glass" type="button">Concluir</button>
-                    <button class="primary-btn" type="button">Adiantar</button>
-                </div>
-            </div>
-        </div>
-    `;
-    card.querySelector('[data-field="name"]').textContent = task.name;
-    card.querySelector('[data-field="priority"]').textContent = task.priority;
-    card.querySelector('[data-field="estimatedTime"]').textContent = `${task.estimatedTime} min`;
+    function renderTimer(running) {
+        clearInterval(timerInterval);
+        timer.hidden = running?.timerStartedAt == null;
+        if (timer.hidden) return;
 
-    tasksSection.append(card);
-});
+        const tick = () => {
+            elapsed.textContent = formatElapsed(elapsedSince(running.timerStartedAt));
+        };
+        tick();
+        timerInterval = setInterval(tick, 1000);
+    }
+
+    function renderHome() {
+        const tasks = getTasksByProfile(profile.id);
+        const commitment = getNextCommitment(tasks, NOW);
+        const available = getAvailableMinutes(commitment, NOW);
+        const result = recommendTask(tasks, NOW, getDisposition());
+        const running = tasks.find((task) => task.status === "em andamento");
+        const advancedId = getAdvancedTaskId();
+        const advanced = tasks.find((task) => task.id === advancedId && isInQueue(task));
+        const advancedStart = parseTaskDate(advanced?.startDate);
+        const canKeepAdvanced = advanced && (!advancedStart || advancedStart <= NOW)
+            && !hasPendingDependencies(advanced, tasks) && fitsAvailableTime(advanced, available);
+        const currentTask = running ?? (canKeepAdvanced ? advanced : result.task);
+        renderTimer(running);
+        fillFields(stats, getStats(tasks, NOW));
+        fillFields(nextTask, {
+            availableTime: formatAvailableTime(available),
+            name: commitment?.task.name ?? "",
+            priority: commitment ? `Prioridade ${PRIORITY_LABELS[commitment.task.priority].toLowerCase()}` : "",
+        });
+
+        recommendation.hidden = !currentTask;
+        recommendationEmpty.hidden = Boolean(currentTask);
+        if (currentTask) {
+            fillTaskCard(recommendation, currentTask);
+            const reason = running ? "Tarefa em andamento."
+                : canKeepAdvanced ? "Você adiantou esta tarefa." : formatReason(result.reasons);
+            fillFields(recommendation, { description: currentTask.description ?? "", reason });
+        }
+
+        renderUpcoming(tasks);
+    }
+
+    subscribeToTasks(renderHome);
+    window.addEventListener("pageshow", (event) => {
+        if (event.persisted) renderHome();
+    });
+    renderHome();
+}
+
+const home = document.querySelector("#app");
+if (home) {
+    setupHome(home);
+    showStartupContent();
+}
