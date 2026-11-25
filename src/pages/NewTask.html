@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,22 +9,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="../styles/Globals.css">
+    <script type="module" src="../scripts/Session.js"></script>
     <script type="module">
+        import { showStartupContent } from "../scripts/Session.js";
+        import { NOW, PROFILE_ID } from "../data/AgoraMock.js";
         import { addTask } from "../data/MockTask.js";
-
-        const questions = [
-            { field: "name", text: "Qual o nome da tarefa?" },
-            { field: "description", text: "Descreva a tarefa." },
-            { field: "priority", text: "Qual a prioridade? (baixa, media, alta)" },
-            { field: "startDate", text: "Quando começa?" },
-            { field: "endDate", text: "Quando termina?" },
-            { field: "estimatedTime", text: "Quanto tempo estimado em minutos?" },
-        ];
+        import { parseTaskDate } from "../data/TaskDates.js";
+        import { readTaskMessage, TASK_FIELDS } from "../scripts/TaskMessage.js";
+        import { fillTaskCard } from "../scripts/UpcomingTasks.js";
 
         const form = document.querySelector("#chat-form");
         const messages = document.querySelector("#messages");
-        const answers = {};
-        let step = 0;
+        const template = document.querySelector("#created-task");
+        let draft = {};
 
         const showMessage = (text, author) => {
             const row = document.createElement("div");
@@ -39,48 +36,78 @@
             messages.scrollTop = messages.scrollHeight;
         };
 
-        showMessage(questions[0].text, "bot");
+        showMessage("Deseja adicionar uma tarefa?", "bot");
+        showMessage("Informe o prazo, título, tempo estimado e prioridade", "bot");
+
+        const getMissing = () => Object.keys(TASK_FIELDS).filter((field) => !draft[field]);
 
         form.addEventListener("submit", (event) => {
             event.preventDefault();
-
             const text = form.elements.message.value.trim();
-            if (!text || step >= questions.length) return;
+            if (!text) return;
 
             showMessage(text, "user");
-            answers[questions[step].field] = text;
             form.reset();
-            step++;
 
-            setTimeout(() => {
-                if (step < questions.length) {
-                    showMessage(questions[step].text, "bot");
-                    return;
-                }
+            const incoming = readTaskMessage(text, NOW, getMissing());
+            if (draft.name) delete incoming.name;
+            draft = { ...draft, ...incoming };
+            const missing = getMissing();
 
-                const task = addTask({ profileId: "01", ...answers, estimatedTime: Number(answers.estimatedTime) || 0 });
-                showMessage(`Tarefa criada: ${task.name}`, "bot");
-            }, 400);
+            if (missing.length) {
+                const fields = new Intl.ListFormat("pt-BR").format(missing.map((field) => TASK_FIELDS[field]));
+                showMessage("Informe " + fields + ".", "bot");
+                return;
+            }
+
+            const task = addTask({
+                ...draft,
+                profileId: PROFILE_ID,
+                description: "",
+                startDate: parseTaskDate(draft.endDate, true) < NOW ? "" : NOW.toISOString(),
+                scheduled: false,
+            });
+            draft = {};
+            showMessage("✓ Evento criado com sucesso", "bot");
+            const card = template.content.cloneNode(true);
+            fillTaskCard(card, task);
+            messages.append(card);
+            messages.scrollTop = messages.scrollHeight;
         });
+        showStartupContent();
     </script>
 
 
     <title>Agora</title>
 </head>
-<body class="google-sans">
+<body class="google-sans" data-requires-session>
+    <p class="p-2" data-startup-message role="status">
+        <span>Se a página não carregar, abra o projeto pelo servidor HTTP local e acesse src/login.html.</span> <a class="text-primary" href="../login.html">Ir para o login</a>
+    </p>
+    <div data-startup-content hidden>
     <main id="new-task" class="w-full gap-1 items-center justify-center overflow-hidden flex flex-col h-screen">
         <header class="flex w-full items-center  justify-center gap-1 p-1 pt-5">
             <a class="glass rounded-xl p-1 text-xl text-primary" href="../app.html">←</a>
-            <h1 class="text-xl text-center">ADICIONAR TAREFA</h1>
+            <h1 class="text-xl text-center">Agora IA</h1>
         </header>
-        <section id="messages" class="chat-messages overflow-hidden flex flex-col gap-1 p-1 w-full"></section>
+        <section id="messages" class="chat-messages overflow-hidden flex flex-col gap-1 p-1 w-full" role="log" aria-label="Conversa com a Agora IA"></section>
         <form id="chat-form" class="flex w-full items-center gap-1 p-1">
             <div class="flex w-full items-center gap-1 glass rounded-xl p-1">
-                <input class="chat-input w-full p-1 text-primary border-none" placeholder="Digite sua resposta" type="text" name="message" id="message" autocomplete="off">
+                <input class="chat-input w-full p-1 text-primary border-none" placeholder="Digite sua resposta" type="text" name="message" id="message" autocomplete="off" aria-label="Mensagem para a Agora IA">
+                <button class="rounded-xl p-1 border-none" type="button" aria-label="Microfone" aria-disabled="true">🎙</button>
                 <button class="chat-send rounded-xl p-1" type="submit">Enviar</button>
             </div>
         </form>
     </main>
+    <template id="created-task">
+        <article class="glass rounded-md p-2 flex flex-col">
+            <h2 class="text-lg" data-field="name"></h2>
+            <p data-field="estimatedTime"></p>
+            <p class="text-sm" data-field="priority"></p>
+            <p class="text-sm" data-field="period"></p>
+        </article>
+    </template>
+    </div>
 </body>
 
 </html>

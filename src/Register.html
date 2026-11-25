@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,56 +8,54 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="../src//styles/Globals.css">
-    <script type="module">
-        import { addAccount } from "../data/AccountMock.js";
-        const form = document.querySelector("#register-form");
-
-        //ao enviar cria a conta no array e mostra a mensagem
-        form.addEventListener("submit", (event) => {
-            event.preventDefault();
-
-            const profile = addAccount(form.elements.name.value, form.elements.email.value, form.elements.password.value);
-
-            form.querySelector('[data-field="message"]').textContent = `Conta criada: ${profile.name}`;
-            form.reset();
-        });
-    </script>
+    <link rel="stylesheet" href="./styles/Globals.css">
+    <script type="module" src="./scripts/Auth.js"></script>
 
 
     <title>Agora</title>
 </head>
 <body class="google-sans">
+    <p class="p-2" data-startup-message role="status">
+        <span>Se a página não carregar, abra o projeto pelo servidor HTTP local e acesse src/login.html.</span>
+    </p>
+    <div data-startup-content hidden>
     <main id="register" class="w-full gap-1 overflow-hidden flex flex-col h-screen">
-        <form  id="register-form" class="p-1 form-style  flex text-primary flex-col items-center h-screen justify-center">
+        <form  id="register-form" novalidate class="p-1 form-style  flex text-primary flex-col items-center h-screen justify-center">
             <div class="flex w-full items-center inversion-colors justify-center">
-                <img src="../assets//icons/logo.png" alt="Agora logo">
+                <img src="../assets/icons/logo.png" alt="Agora logo">
             </div>
             <div id="other-login" class="inversion-colors">
-              <button>G</button>
-              <button>G</button>
-              <button>G</button>
+              <button type="button" aria-disabled="true">G</button>
+              <button type="button" aria-disabled="true">G</button>
+              <button type="button" aria-disabled="true">G</button>
             </div>
             <fieldset class="border-none flex flex-col w-full">
-                <label for="name" class="text-primary text-sm">EMAIL</label>
-                <input class="p-1 rounded-md text-primary bg-background" placeholder="Jhon" type="text" name="name" id="name" required>
+                <label for="email" class="text-primary text-sm">E-MAIL</label>
+                <input class="p-1 rounded-md text-primary bg-background" type="email" name="email" id="email" autocomplete="username" required>
             </fieldset>
             <fieldset class="border-none flex flex-col w-full">
-                <label for="email" class="text-primary text-sm">SENHA</label>
-                <input class="p-1 rounded-md text-primary bg-background" placeholder="jhon@mail.com" type="email" name="email" id="email" required>
+                <label for="password" class="text-primary text-sm">SENHA</label>
+                <input class="p-1 rounded-md text-primary bg-background" type="password" name="password" id="password" autocomplete="new-password" required>
             </fieldset>
             <fieldset class="border-none flex flex-col w-full">
-                <label for="password" class="text-primary text-sm">REPITA A SENHA</label>
-                <input class="p-1 rounded-md text-primary bg-background" placeholder="123#4$*Aa1213" type="password" name="password" id="password" required>
+                <label for="repeat-password" class="text-primary text-sm">REPITA A SENHA</label>
+                <input class="p-1 rounded-md text-primary bg-background" type="password" name="repeat" id="repeat-password" autocomplete="new-password" required>
             </fieldset>
+            <div class="p-1 text-sm">
+                <input type="checkbox" name="terms" id="terms" required>
+                <label for="terms">Concordo com os termos/política de privacidade</label>
+                <a class="text-primary" href="./pages/Terms.html">Termos de uso</a>
+            </div>
+            <p class="text-sm" role="status" data-field="message"></p>
             <div class="form-btns flex items-center justify-center">
-                <button class="primary-btn" type="submit">Registrar-se</button>
-                <p>ou</p>
-                <a class="text-sm text-primary" href="./login.html">login</a>
+                <button class="primary-btn" type="submit">REGISTRE-SE</button>
+                <p>OU</p>
+                <a class="text-sm text-primary" href="./login.html">LOGIN</a>
             </div>
 
         </form>
     </main>
+    </div>
 </body>
 
 </html>
