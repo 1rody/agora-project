@@ -82,6 +82,7 @@ function setupHome(home) {
             name: commitment?.task.name ?? "",
             priority: commitment ? `Prioridade ${PRIORITY_LABELS[commitment.task.priority].toLowerCase()}` : "",
         });
+        nextTask.querySelector('[data-field="priority"]').dataset.priority = commitment?.task.priority ?? "";
 
         recommendation.hidden = !currentTask;
         recommendationEmpty.hidden = Boolean(currentTask);

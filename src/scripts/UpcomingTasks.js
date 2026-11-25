@@ -25,6 +25,7 @@ export function fillTaskCard(card, task) {
         estimatedTime: task.estimatedTime > 0 ? task.estimatedTime + " min" : "Sem estimativa",
         period: formatTaskPeriod(task),
     });
+    card.querySelector('[data-field="priority"]').dataset.priority = task.priority;
 }
 
 export function hasPendingDependencies(task, tasks) {
