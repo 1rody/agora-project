@@ -28,81 +28,63 @@
             </div>
             <time class="text-sm text-primary" data-field="lastTimeOnline"></time>
         </header>
-        <section id="stats" class="p-1" aria-labelledby="stats-title">
-            <div class="glass rounded-md p-2 flex flex-col gap-1">
-                <div class="flex flex-wrap items-center justify-between gap-1">
-                    <h2 id="stats-title" class="text-md">Estatísticas</h2>
-                    <a class="text-sm text-primary" href="./pages/support/Support.html?origem=inicio#sobre">Como funciona?</a>
-                </div>
-                <div class="flex flex-wrap justify-between gap-1">
-                    <p class="flex flex-col text-sm"><span class="text-lg" data-field="old"></span>Tarefas antigas</p>
-                    <p class="flex flex-col text-sm"><span class="text-lg" data-field="completed"></span>Concluídas</p>
-                    <p class="flex flex-col text-sm"><span class="text-lg" data-field="blocked"></span>Bloqueadas</p>
-                </div>
+        <section id="stats" class="p-1 flex flex-col" aria-labelledby="stats-title">
+            <h2 id="stats-title" class="text-xs link-blue">Estatísticas</h2>
+            <div class="stat-cards flex">
+                <p class="stat-card glass rounded-md">
+                    <span class="stat-top"><span class="stat-number" data-field="old"></span><span class="stat-bars" aria-hidden="true"><i style="height:23px"></i><i style="height:29px"></i><i style="height:16px"></i><i style="height:20px"></i><i style="height:29px"></i><i style="height:16px"></i></span></span>
+                    <span class="text-sm">Tarefas antigas</span>
+                </p>
+                <p class="stat-card glass rounded-md">
+                    <span class="stat-top"><span class="stat-number" data-field="completed"></span><span class="stat-bars" aria-hidden="true"><i style="height:23px"></i><i style="height:29px"></i><i style="height:29px"></i><i style="height:20px"></i><i style="height:16px"></i><i style="height:16px"></i></span></span>
+                    <span class="text-sm">Tarefas concluídas</span>
+                </p>
+                <p class="stat-card glass rounded-md">
+                    <span class="stat-top"><span class="stat-number" data-field="blocked"></span><span class="stat-bars" aria-hidden="true"><i style="height:23px"></i><i style="height:29px"></i><i style="height:16px"></i><i style="height:29px"></i></span></span>
+                    <span class="text-sm">Bloqueadas</span>
+                </p>
             </div>
         </section>
-        <section class="p-1" aria-labelledby="disposition-title">
-            <div class="glass rounded-md p-2 flex flex-col gap-1">
-                <h2 id="disposition-title" class="text-md">Sua disposição hoje</h2>
-                <div class="flex justify-around items-center gap-1" role="group" aria-labelledby="disposition-title">
-                    <button class="glass rounded-xl border-none p-1" type="button" data-disposition="high" aria-label="Disposição alta" aria-pressed="false" title="Alta">
-                        <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
-                            <circle data-active-ring cx="20" cy="20" r="18" fill="none" stroke="#3867E5" stroke-width="2" visibility="hidden"/>
-                            <circle cx="20" cy="20" r="14" fill="#2445AB"/>
-                            <circle cx="15" cy="17" r="1.5" fill="#fff"/>
-                            <circle cx="25" cy="17" r="1.5" fill="#fff"/>
-                            <path d="M14 22c3 5 9 5 12 0" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </button>
-                    <button class="bg-foreground rounded-xl border-none p-1" type="button" data-disposition="medium" aria-label="Disposição média" aria-pressed="true" title="Média">
-                        <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
-                            <circle data-active-ring cx="20" cy="20" r="18" fill="none" stroke="#8056C8" stroke-width="2"/>
-                            <circle cx="20" cy="20" r="14" fill="#8056C8"/>
-                            <circle cx="15" cy="17" r="1.5" fill="#fff"/>
-                            <circle cx="25" cy="17" r="1.5" fill="#fff"/>
-                            <path d="M16 23h8" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </button>
-                    <button class="glass rounded-xl border-none p-1" type="button" data-disposition="low" aria-label="Disposição baixa" aria-pressed="false" title="Baixa">
-                        <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
-                            <circle data-active-ring cx="20" cy="20" r="18" fill="none" stroke="#5DA9E9" stroke-width="2" visibility="hidden"/>
-                            <circle cx="20" cy="20" r="14" fill="#8CC9FC"/>
-                            <circle cx="15" cy="17" r="1.5" fill="#173366"/>
-                            <circle cx="25" cy="17" r="1.5" fill="#173366"/>
-                            <path d="M15 25c3-3 7-3 10 0" fill="none" stroke="#173366" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </button>
-                </div>
+        <section class="p-1 gap-1 flex flex-col" aria-labelledby="disposition-title">
+            <div class="flex items-center justify-between">
+                <a class="text-xs link-blue" href="./pages/support/Support.html?origem=inicio#sobre">Como funciona?</a>
+                <h2 id="disposition-title" class="text-xs">SUA DISPOSIÇÃO HOJE</h2>
+            </div>
+            <div class="mood-selector" role="group" aria-labelledby="disposition-title">
+                <!-- data-active-ring: o Disposition.js procura este atributo em cada botao -->
+                <button class="mood-btn glass" type="button" data-disposition="high" data-mood="good" aria-label="Disposição alta" aria-pressed="false" title="Alta"><img data-active-ring src="../assets/icons/FaceSmile.svg" alt=""></button>
+                <button class="mood-btn bg-foreground" type="button" data-disposition="medium" data-mood="neutral" aria-label="Disposição média" aria-pressed="true" title="Média"><img data-active-ring src="../assets/icons/FaceGrin.svg" alt=""></button>
+                <button class="mood-btn glass" type="button" data-disposition="low" data-mood="bad" aria-label="Disposição baixa" aria-pressed="false" title="Baixa"><img data-active-ring src="../assets/icons/FaceFrown.svg" alt=""></button>
             </div>
         </section>
         <section id="next-task" class="p-1" aria-labelledby="next-task-title">
-            <div class="glass rounded-md p-2 flex flex-wrap items-center justify-between gap-1">
-                <div>
-                    <h2 id="next-task-title" class="text-sm">Até a próxima tarefa</h2>
-                    <p class="text-lg" data-field="availableTime"></p>
+            <div class="flex items-end justify-between gap-1">
+                <div class="flex flex-col">
+                    <h2 id="next-task-title" class="text-xs">Até a próxima tarefa</h2>
+                    <p class="next-time" data-field="availableTime"></p>
                 </div>
-                <div class="text-right">
-                    <p data-field="name"></p>
-                    <span class="text-sm" data-field="priority"></span>
+                <div class="flex flex-col text-right">
+                    <span class="text-xs priority" data-field="priority"></span>
+                    <span class="text-xs" data-field="name"></span>
                 </div>
             </div>
         </section>
         <section id="recommendation" class="p-1 gap-1 flex flex-col" aria-labelledby="recommendation-title">
-            <h2 id="recommendation-title" class="text-sm">Recomendação para agora</h2>
+            <h2 id="recommendation-title" class="text-xs">Recomendação para agora</h2>
             <article id="recommended-task" class="glass rounded-md p-2" hidden>
                 <div class="flex flex-col gap-1">
-                    <div class="flex w-full flex-wrap items-center justify-between gap-1">
+                    <div class="flex w-full items-start justify-between gap-1">
                         <div class="flex flex-col">
-                            <span data-field="estimatedTime"></span>
-                            <p class="text-sm" data-field="period"></p>
+                            <span class="task-time" data-field="estimatedTime"></span>
+                            <p class="text-xs" data-field="period"></p>
                         </div>
-                        <div class="text-right">
-                            <h3 class="text-lg text-primary" data-field="name"></h3>
-                            <span data-field="priority"></span>
+                        <div class="flex flex-col items-end text-right">
+                            <h3 class="task-title text-primary" data-field="name"></h3>
+                            <span class="text-xs priority" data-field="priority"></span>
                         </div>
                     </div>
                     <p class="text-sm" data-field="description"></p>
-                    <p class="text-sm" data-field="reason" role="status"></p>
+                    <p class="recommendation-reason text-xs" role="status"><img src="../assets/icons/Info.svg" alt=""><span data-field="reason"></span></p>
                     <p id="task-timer" class="text-sm" hidden>Cronômetro <span role="timer">00:00</span></p>
                 </div>
             </article>
@@ -131,15 +113,15 @@
     <template id="upcoming-task">
         <article class="flex flex-col p-2 glass rounded-md">
             <div class="w-full text-right">
-                <h3 class="text-lg text-primary" data-field="name"></h3>
-                <span data-field="priority"></span>
+                <h3 class="task-title text-primary" data-field="name"></h3>
+                <span class="text-xs priority" data-field="priority"></span>
             </div>
             <div class="flex w-full flex-wrap items-center justify-between gap-1">
                 <div class="flex flex-col">
-                    <span data-field="estimatedTime"></span>
-                    <p class="text-sm" data-field="period"></p>
+                    <span class="task-time" data-field="estimatedTime"></span>
+                    <p class="text-xs" data-field="period"></p>
                 </div>
-                <div class="task-btns task-btns-full flex flex-wrap items-center gap-1">
+                <div class="task-btns task-btns-full flex items-center gap-1">
                     <button class="secondary-btn glass" data-action="complete" type="button">CONCLUIR</button>
                     <button class="primary-btn" data-action="advance" type="button">ADIANTAR</button>
                 </div>
