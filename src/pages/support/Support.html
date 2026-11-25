@@ -3,170 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="../../styles/Globals.css">
+    <link rel="stylesheet" href="../../styles/Support.css">
     <script type="module" src="../../scripts/Session.js"></script>
     <title>Agora - Suporte</title>
     <script type="module">
         import { getSessionProfileId, showStartupContent } from "../../scripts/Session.js";
         import { getTasksByProfile, subscribeToTasks } from "../../data/MockTask.js";
-        import { bindDisposition } from "../../scripts/Disposition.js";
-        import { clearAdvancedTask, setupUpcomingTasks } from "../../scripts/UpcomingTasks.js";
+        import { NOW } from "../../data/AgoraMock.js";
+        import { parseTaskDate } from "../../data/TaskDates.js";
+        import { fitsAvailableTime, getAvailableMinutes, getNextCommitment, getStats, isInQueue, recommendTask } from "../../scripts/Recommendation.js";
+        import { bindDisposition, getDisposition } from "../../scripts/Disposition.js";
+        import { clearAdvancedTask, fillFields, fillTaskCard, getAdvancedTaskId, hasPendingDependencies } from "../../scripts/UpcomingTasks.js";
 
         const titles = { contato: "FALE CONOSCO", sobre: "SOBRE", ajuda: "PRECISA DE AJUDA?" };
         const title = document.querySelector("#support-title");
         const back = document.querySelector("#support-back");
-        const sections = document.querySelectorAll("[data-support-view]");
         const fromHome = new URLSearchParams(location.search).get("origem") === "inicio";
-
         function showSection() {
             const hash = location.hash.slice(1);
             const view = Object.hasOwn(titles, hash) ? hash : "suporte";
-            for (const section of sections) section.hidden = section.id !== view;
+            document.querySelectorAll("[data-support-view]").forEach((section) => { section.hidden = section.id !== view; });
             title.textContent = titles[view] ?? "SUPORTE";
-            back.href = fromHome ? "../../app.html" : view === "suporte" ? "../settings/Settings.html" : "#suporte";
+            back.href = view === "suporte" ? (fromHome ? "../../app.html" : "../settings/Settings.html") : (fromHome ? "../../app.html" : "#suporte");
         }
 
-        const contact = document.querySelector("#contact-form");
-        contact.addEventListener("submit", (event) => {
+        const form = document.querySelector("#contact-form");
+        form.addEventListener("submit", (event) => {
             event.preventDefault();
-            const feedback = contact.querySelector('[role="status"]');
-            if (!contact.elements.message.value.trim()) {
-                feedback.textContent = "Escreva sua mensagem.";
+            const fields = [form.elements.subject, form.elements.message];
+            fields.forEach((field) => {
+                const invalid = !field.value.trim();
+                field.setAttribute("aria-invalid", String(invalid));
+                field.closest("fieldset").toggleAttribute("data-invalid", invalid);
+            });
+            const feedback = form.querySelector('[role="status"]');
+            if (fields.some((field) => !field.value.trim())) {
+                feedback.textContent = "Preencha o assunto e a mensagem.";
                 return;
             }
-            contact.reset();
-            feedback.textContent = "Mensagem recebida nesta simulação.";
+            try {
+                const messages = JSON.parse(localStorage.getItem("agora-support") || "[]");
+                messages.push({ profileId: getSessionProfileId(), subject: fields[0].value.trim(), message: fields[1].value.trim(), date: NOW.toISOString() });
+                localStorage.setItem("agora-support", JSON.stringify(messages));
+                form.reset();
+                fields.forEach((field) => field.removeAttribute("aria-invalid"));
+                feedback.textContent = "Mensagem enviada com sucesso.";
+            } catch {
+                feedback.textContent = "Não foi possível salvar sua mensagem. Tente novamente.";
+            }
         });
 
-        const renderUpcoming = setupUpcomingTasks(document.querySelector("#tasks"));
-        const refreshTasks = () => renderUpcoming(getTasksByProfile(getSessionProfileId()));
-        bindDisposition(document.querySelector('#sobre [role="group"]'), (changed) => {
+        const stats = document.querySelector("#support-stats");
+        const card = document.querySelector("#support-recommendation");
+        const empty = document.querySelector("#support-empty");
+        function renderAbout() {
+            const tasks = getTasksByProfile(getSessionProfileId());
+            const result = recommendTask(tasks, NOW, getDisposition());
+            const running = tasks.find((task) => task.status === "em andamento");
+            const advanced = tasks.find((task) => task.id === getAdvancedTaskId() && isInQueue(task));
+            const start = parseTaskDate(advanced?.startDate);
+            const available = getAvailableMinutes(getNextCommitment(tasks, NOW), NOW);
+            const canAdvance = advanced && (!start || start <= NOW) && !hasPendingDependencies(advanced, tasks) && fitsAvailableTime(advanced, available);
+            const task = running ?? (canAdvance ? advanced : result.task);
+            fillFields(stats, getStats(tasks, NOW));
+            card.hidden = !task;
+            empty.hidden = Boolean(task);
+            if (task) {
+                fillTaskCard(card, task);
+                const reason = running ? "Tarefa em andamento." : canAdvance ? "Você adiantou esta tarefa." : (result.reasons.length ? `${result.reasons.join(" e ")}.` : "Tarefa disponível para agora.");
+                fillFields(card, { description: task.description ?? "", reason: reason[0].toUpperCase() + reason.slice(1) });
+            }
+        }
+        bindDisposition(document.querySelector(".mood-selector"), (changed) => {
             if (changed) clearAdvancedTask();
+            renderAbout();
         });
-        subscribeToTasks(refreshTasks);
-        window.addEventListener("pageshow", (event) => {
-            if (event.persisted) refreshTasks();
-        });
-        refreshTasks();
-
+        subscribeToTasks(renderAbout);
+        window.addEventListener("pageshow", (event) => { if (event.persisted) renderAbout(); });
         window.addEventListener("hashchange", showSection);
+        renderAbout();
         showSection();
         showStartupContent();
     </script>
 </head>
 <body class="google-sans" data-requires-session>
     <p class="p-2" data-startup-message role="status">
-        <span>Se a página não carregar, abra o projeto pelo servidor HTTP local e acesse src/login.html.</span> <a class="text-primary" href="../../login.html">Ir para o login</a>
+        <span>Se a página não carregar, abra o projeto pelo servidor HTTP local e acesse src/login.html.</span>
+        <a class="text-primary" href="../../login.html">Ir para o login</a>
     </p>
     <div data-startup-content hidden>
-    <main class="flex flex-col w-full">
-        <header class="flex w-full items-center justify-center gap-1 pt-5">
-            <a id="support-back" class="glass rounded-xl p-1 text-xl text-primary" href="../settings/Settings.html" aria-label="Voltar">←</a>
-            <h1 id="support-title" class="text-xl text-center">SUPORTE</h1>
-        </header>
-        <nav id="suporte" class="p-2" data-support-view aria-label="Suporte">
-            <ol class="flex flex-col gap-1">
-                <li><a class="glass flex rounded-md p-1 text-primary" href="#contato">Fale conosco</a></li>
-                <li><a class="glass flex rounded-md p-1 text-primary" href="#sobre">Como funciona?</a></li>
-                <li><a class="glass flex rounded-md p-1 text-primary" href="#ajuda">Precisa de ajuda?</a></li>
-            </ol>
-        </nav>
-        <section id="contato" class="p-2" data-support-view hidden>
-            <form id="contact-form" class="glass rounded-md p-2 flex flex-col gap-1" novalidate>
-                <label class="text-primary flex flex-col" for="support-message">Mensagem
-                    <textarea id="support-message" name="message" class="chat-input rounded-md p-1" rows="5" required></textarea>
-                </label>
-                <button class="primary-btn w-fit" type="submit">ENVIAR MENSAGEM</button>
-                <p class="text-sm" role="status"></p>
-            </form>
-        </section>
-        <section id="sobre" class="p-2" data-support-view hidden>
-            <div class="glass rounded-md p-2 flex flex-col gap-1">
-                <p>O Agora ajuda você a decidir o que faz sentido fazer agora.</p>
-                <p>A recomendação considera sua disposição, o tempo até o próximo compromisso, a prioridade, a urgência e o prazo de cada tarefa.</p>
-                <p>Uma tarefa vinculada fica disponível assim que todas as suas dependências forem concluídas.</p>
-            </div>
-            <section class="p-1" aria-labelledby="disposition-title">
-                <div class="glass rounded-md p-2 flex flex-col gap-1">
-                    <h2 id="disposition-title" class="text-md">Sua disposição hoje</h2>
-                    <div class="flex justify-around items-center gap-1" role="group" aria-labelledby="disposition-title">
-                        <button class="glass rounded-xl border-none p-1" type="button" data-disposition="high" aria-label="Disposição alta" aria-pressed="false" title="Alta">
-                            <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
-                                <circle data-active-ring cx="20" cy="20" r="18" fill="none" stroke="#3867E5" stroke-width="2" visibility="hidden"/>
-                                <circle cx="20" cy="20" r="14" fill="#2445AB"/>
-                                <circle cx="15" cy="17" r="1.5" fill="#fff"/>
-                                <circle cx="25" cy="17" r="1.5" fill="#fff"/>
-                                <path d="M14 22c3 5 9 5 12 0" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                        </button>
-                        <button class="bg-foreground rounded-xl border-none p-1" type="button" data-disposition="medium" aria-label="Disposição média" aria-pressed="true" title="Média">
-                            <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
-                                <circle data-active-ring cx="20" cy="20" r="18" fill="none" stroke="#8056C8" stroke-width="2"/>
-                                <circle cx="20" cy="20" r="14" fill="#8056C8"/>
-                                <circle cx="15" cy="17" r="1.5" fill="#fff"/>
-                                <circle cx="25" cy="17" r="1.5" fill="#fff"/>
-                                <path d="M16 23h8" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                        </button>
-                        <button class="glass rounded-xl border-none p-1" type="button" data-disposition="low" aria-label="Disposição baixa" aria-pressed="false" title="Baixa">
-                            <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
-                                <circle data-active-ring cx="20" cy="20" r="18" fill="none" stroke="#5DA9E9" stroke-width="2" visibility="hidden"/>
-                                <circle cx="20" cy="20" r="14" fill="#8CC9FC"/>
-                                <circle cx="15" cy="17" r="1.5" fill="#173366"/>
-                                <circle cx="25" cy="17" r="1.5" fill="#173366"/>
-                                <path d="M15 25c3-3 7-3 10 0" fill="none" stroke="#173366" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                        </button>
+        <main class="support-main">
+            <header class="support-header">
+                <a id="support-back" class="support-back glass" href="../settings/Settings.html" aria-label="Voltar">←</a>
+                <h1 id="support-title">SUPORTE</h1>
+            </header>
+            <nav id="suporte" data-support-view aria-label="Suporte">
+                <ul class="support-links">
+                    <li><a class="glass" href="#contato">FALE CONOSCO</a></li>
+                    <li><a class="glass" href="#sobre">COMO FUNCIONA?</a></li>
+                    <li><a class="glass" href="#ajuda">PRECISA DE AJUDA?</a></li>
+                </ul>
+            </nav>
+            <section id="contato" data-support-view hidden>
+                <form id="contact-form" class="support-form" novalidate>
+                    <fieldset>
+                        <label for="support-subject">ASSUNTO</label>
+                        <input id="support-subject" name="subject" type="text" placeholder=" " required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="support-message">MENSAGEM</label>
+                        <textarea id="support-message" name="message" rows="5" placeholder=" " required></textarea>
+                    </fieldset>
+                    <button class="primary-btn" type="submit">ENVIAR MENSAGEM</button>
+                    <p class="form-error" role="status"></p>
+                </form>
+            </section>
+            <section id="sobre" class="support-about" data-support-view hidden>
+                <h2 id="support-disposition-title" class="text-xs">SUA DISPOSIÇÃO HOJE</h2>
+                <div class="mood-selector" role="group" aria-labelledby="support-disposition-title">
+                    <button class="mood-btn glass" type="button" data-disposition="high" data-mood="good" aria-label="Disposição alta" aria-pressed="false" title="Alta">
+                        <img data-active-ring src="../../../assets/icons/FaceSmile.svg" alt="">
+                    </button>
+                    <button class="mood-btn bg-foreground" type="button" data-disposition="medium" data-mood="neutral" aria-label="Disposição média" aria-pressed="true" title="Média">
+                        <img data-active-ring src="../../../assets/icons/FaceGrin.svg" alt="">
+                    </button>
+                    <button class="mood-btn glass" type="button" data-disposition="low" data-mood="bad" aria-label="Disposição baixa" aria-pressed="false" title="Baixa">
+                        <img data-active-ring src="../../../assets/icons/FaceFrown.svg" alt="">
+                    </button>
+                </div>
+                <p>O Agora ajuda você a decidir o que faz sentido fazer agora. A recomendação considera sua disposição, o tempo até o próximo compromisso, a prioridade, a urgência e o prazo de cada tarefa. Uma tarefa vinculada fica disponível assim que todas as suas dependências forem concluídas.</p>
+                <section id="support-stats" aria-labelledby="support-stats-title">
+                    <h2 id="support-stats-title" class="text-xs link-blue">ESTATÍSTICAS</h2>
+                    <div class="stat-cards flex">
+                        <p class="stat-card glass rounded-md">
+                            <span class="stat-top"><span class="stat-number" data-field="old"></span><span class="stat-bars" aria-hidden="true"><i style="height:23px"></i><i style="height:29px"></i><i style="height:16px"></i></span></span>
+                            <span class="text-sm">Tarefas antigas</span>
+                        </p>
+                        <p class="stat-card glass rounded-md">
+                            <span class="stat-top"><span class="stat-number" data-field="completed"></span><span class="stat-bars" aria-hidden="true"><i style="height:23px"></i><i style="height:29px"></i><i style="height:16px"></i></span></span>
+                            <span class="text-sm">Tarefas concluídas</span>
+                        </p>
+                        <p class="stat-card glass rounded-md">
+                            <span class="stat-top"><span class="stat-number" data-field="blocked"></span><span class="stat-bars" aria-hidden="true"><i style="height:23px"></i><i style="height:29px"></i><i style="height:16px"></i></span></span>
+                            <span class="text-sm">Bloqueadas</span>
+                        </p>
                     </div>
-                </div>
+                </section>
+                <p>Com base na sua disposição escolhida, o Agora recomenda uma tarefa que cabe no seu tempo disponível.</p>
+                <h2 class="text-xs">TAREFA</h2>
+                <article id="support-recommendation" class="glass rounded-md p-2" hidden>
+                    <div class="flex w-full items-start justify-between gap-1">
+                        <div class="flex flex-col">
+                            <span class="task-time" data-field="estimatedTime"></span>
+                            <p class="text-xs" data-field="period"></p>
+                        </div>
+                        <div class="flex flex-col items-end text-right">
+                            <h3 class="task-title text-primary" data-field="name"></h3>
+                            <span class="text-xs priority" data-field="priority"></span>
+                        </div>
+                    </div>
+                    <p class="text-sm" data-field="description"></p>
+                    <p class="recommendation-reason text-xs" role="status">
+                        <img src="../../../assets/icons/Info.svg" alt="">
+                        <span data-field="reason"></span>
+                    </p>
+                </article>
+                <p id="support-empty" class="glass rounded-md p-2" role="status" hidden>Nenhuma tarefa disponível para agora.</p>
             </section>
-            <section id="tasks" class="p-1 gap-1 flex flex-col">
-                <h2 class="text-sm">A seguir hoje</h2>
-                <div id="upcoming-list" class="flex flex-col gap-1"></div>
-                <p id="task-feedback" class="text-sm" role="status"></p>
-                <p id="upcoming-empty" class="text-sm" hidden>Nenhuma tarefa agendada para mais tarde hoje.</p>
+            <section id="ajuda" class="support-faq" data-support-view hidden>
+                <details class="glass"><summary>Como funciona a recomendação?</summary><p>Ela considera sua disposição, o tempo disponível, a prioridade e o prazo das tarefas.</p></details>
+                <details class="glass"><summary>Como altero minha disposição?</summary><p>Escolha uma das carinhas na página inicial ou em Como funciona.</p></details>
+                <details class="glass"><summary>O que são tarefas vinculadas?</summary><p>São dependências que precisam ser concluídas antes de liberar uma tarefa.</p></details>
+                <details class="glass"><summary>Como adianto uma tarefa?</summary><p>Use ADIANTAR em uma tarefa disponível para escolhê-la antes da recomendação atual.</p></details>
+                <details class="glass"><summary>Onde encontro meu histórico?</summary><p>Abra Tarefas e selecione HISTÓRICO para consultar seus registros.</p></details>
+                <details class="glass"><summary>Como recupero minha conta?</summary><p>Na tela de login, selecione recuperar conta e siga as instruções.</p></details>
             </section>
-        </section>
-        <section id="ajuda" class="p-2" data-support-view hidden>
-            <div class="flex flex-col gap-1">
-                <details class="glass rounded-md p-2">
-                    <summary class="text-primary">Por que uma tarefa está bloqueada?</summary>
-                    <p class="p-1">Conclua as tarefas vinculadas para liberá-la.</p>
-                </details>
-                <details class="glass rounded-md p-2">
-                    <summary class="text-primary">Onde vejo o tempo que levei para concluir uma tarefa?</summary>
-                    <p class="p-1">Abra o Histórico para consultar o tempo registrado nas tarefas concluídas.</p>
-                </details>
-                <details class="glass rounded-md p-2">
-                    <summary class="text-primary">Como atualizo a recomendação?</summary>
-                    <p class="p-1">Na tela inicial, selecione o rosto que corresponde à sua disposição de hoje.</p>
-                </details>
-            </div>
-        </section>
-    </main>
-    <template id="upcoming-task">
-        <article class="flex flex-col p-2 glass rounded-md">
-            <div class="w-full text-right">
-                <h3 class="text-lg text-primary" data-field="name"></h3>
-                <span data-field="priority"></span>
-            </div>
-            <div class="flex w-full flex-wrap items-center justify-between gap-1">
-                <div class="flex flex-col">
-                    <span data-field="estimatedTime"></span>
-                    <p class="text-sm" data-field="period"></p>
-                </div>
-                <div class="task-btns task-btns-full flex flex-wrap items-center gap-1">
-                    <button class="secondary-btn glass" data-action="complete" type="button">CONCLUIR</button>
-                    <button class="primary-btn" data-action="advance" type="button">ADIANTAR</button>
-                </div>
-            </div>
-        </article>
-    </template>
+        </main>
+        <footer class="fixed bottom-0 w-full items-center justify-center flex">
+            <nav id="navigation" class="flex items-center w-full justify-between p-1" aria-label="Navegação principal">
+                <ol class="flex items-center gap-1 glass rounded-xl p-1 justify-around">
+                    <li><a href="../../app.html"><img src="../../../assets/icons/Brand.svg" alt="Início"></a></li>
+                    <li><a href="../Tarefas.html"><img src="../../../assets/icons/List.svg" alt="Tarefas"></a></li>
+                    <li><a href="../settings/Settings.html" aria-current="page"><img src="../../../assets/icons/Settings.svg" alt="Configurações"></a></li>
+                </ol>
+                <ol class="glass rounded-xl p-1">
+                    <li><a href="../NewTask.html"><img src="../../../assets/icons/Create.svg" alt="Adicionar tarefa"></a></li>
+                </ol>
+            </nav>
+        </footer>
     </div>
 </body>
 </html>

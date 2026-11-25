@@ -1,189 +1,196 @@
 import { getSessionProfileId, showStartupContent } from "./Session.js";
-import { getProfile } from "../data/AccountMock.js";
-import { MINIMUM_PASSWORD_LENGTH, NOW, mockSecurity } from "../data/AgoraMock.js";
-import { dateKey, formatDate, formatDateTime } from "../data/TaskDates.js";
+import { getProfile, emailExists, updateAccount } from "../data/AccountMock.js";
+import { MINIMUM_PASSWORD_LENGTH, NOW, mockSecurity, mockTasks, mockHistory } from "../data/AgoraMock.js";
+import { getTasksByProfile } from "../data/MockTask.js";
+import { getHistoryByProfile } from "../data/HistoryMock.js";
+import { dateKey, formatDate, parseTaskDate } from "../data/TaskDates.js";
 
-const profile = getProfile(getSessionProfileId());
+const profileId = getSessionProfileId();
+const profile = getProfile(profileId);
+const field = (name) => document.querySelector(`[data-field="${name}"]`);
 
-function setupProfile(form) {
+function setupProfile() {
+    const form = document.querySelector("#profile-form");
     const summary = document.querySelector("#profile");
-    const name = summary.querySelector('[data-field="name"]');
-    const feedback = form.querySelector('[role="status"]');
-    const back = document.querySelector("#settings-back");
-    const title = document.querySelector("#settings-title");
     const editor = document.querySelector("#perfil");
-    const fields = form.elements;
-
+    const feedback = form.querySelector('[role="status"]');
     const today = dateKey(NOW);
-    const age = summary.querySelector('[data-field="age"]');
-    const pronouns = summary.querySelector('[data-field="pronouns"]');
-
-    function showProfileDetails(birthDate, selectedPronouns) {
-        const years = Number(today.slice(0, 4)) - Number(birthDate.slice(0, 4));
-        const birthdayPending = today.slice(5) < birthDate.slice(5);
-        age.textContent = (years - Number(birthdayPending)) + " anos";
-        pronouns.textContent = selectedPronouns;
+    function render() {
+        const current = getProfile(profileId);
+        field("name").textContent = current.name;
+        const memberDate = parseTaskDate(current.memberSince);
+        field("memberSince").textContent = memberDate
+            ? new Intl.DateTimeFormat("pt-BR", { month: "short", year: "numeric", timeZone: "America/Bahia" }).format(memberDate).replace(" de ", " ").replace(".", "")
+            : "Data não informada";
+        const birth = current.birthDate || "";
+        const age = birth ? Number(today.slice(0, 4)) - Number(birth.slice(0, 4)) - Number(today.slice(5) < birth.slice(5)) : null;
+        field("age").textContent = birth ? `${age} anos · ${formatDate(birth)}` : "Nascimento não informado";
+        field("pronouns").textContent = current.pronouns || "Não informados";
+        field("recovery").textContent = current.recoveryEmail || "ADICIONAR";
+        form.elements.name.value = current.name || "";
+        form.elements.birthDate.value = birth;
+        form.elements.birthDate.max = today;
+        form.elements.pronouns.value = current.pronouns || "";
     }
-
-    name.textContent = profile.name;
-    showProfileDetails(profile.birthDate, profile.pronouns);
-    summary.querySelector('[data-field="memberSince"]').textContent = formatDate(profile.memberSince);
-    fields.name.value = profile.name;
-    fields.birthDate.value = profile.birthDate;
-    fields.birthDate.max = today;
-    fields.pronouns.value = profile.pronouns;
-
     function showSection() {
         const editing = location.hash === "#perfil";
         editor.hidden = !editing;
         summary.hidden = editing;
-        title.textContent = editing ? "PERFIL" : "CONFIGURAÇÕES";
-        back.href = editing ? "#settings" : "../../app.html";
-        if (editing) fields.name.focus();
+        document.querySelector("#settings-title").textContent = editing ? "PERFIL" : "CONFIGURAÇÕES";
+        document.querySelector("#settings-back").href = editing ? "#settings" : "../../app.html";
+        if (editing) form.elements.name.focus();
     }
-
-    window.addEventListener("hashchange", showSection);
-    showSection();
-
     form.addEventListener("submit", (event) => {
         event.preventDefault();
-        const updatedName = fields.name.value.trim();
-        if (!updatedName) {
-            feedback.textContent = "Preencha seu nome.";
-            fields.name.focus();
+        const name = form.elements.name.value.trim();
+        if (!name || !form.elements.birthDate.validity.valid) {
+            feedback.textContent = !name ? "Preencha seu nome." : "Informe uma data de nascimento válida.";
             return;
         }
-        if (!fields.birthDate.validity.valid) {
-            feedback.textContent = "Informe uma data de nascimento válida.";
-            fields.birthDate.focus();
-            return;
-        }
-
-        name.textContent = updatedName;
-        fields.name.value = updatedName;
-        fields.pronouns.value = fields.pronouns.value.trim();
-        showProfileDetails(fields.birthDate.value, fields.pronouns.value);
+        updateAccount(profileId, { name, birthDate: form.elements.birthDate.value, pronouns: form.elements.pronouns.value.trim() });
+        render();
         feedback.textContent = "Dados salvos!";
     });
+    window.addEventListener("hashchange", showSection);
+    render();
+    showSection();
 }
 
-function setupEmail() {
-    const current = document.querySelector("#current-email");
-    const send = document.querySelector("#send-email-code");
-    const verify = document.querySelector("#verify-email-code");
-    const recipient = document.querySelector("#email-recipient");
-    const feedback = document.querySelector("#email-feedback");
-    const code = verify.elements.code;
-    let pendingEmail = "";
-
-    current.textContent = profile.email;
+function setupEmailFlow(kind) {
+    const block = document.querySelector(`#${kind}`);
+    const send = block.querySelector("[data-send]");
+    const verify = block.querySelector("[data-verify]");
+    const recipient = block.querySelector("[data-recipient]");
+    const feedback = block.querySelector('[role="status"]');
+    let pending = "";
     send.addEventListener("submit", (event) => {
         event.preventDefault();
-        const field = send.elements.email;
-        const email = field.value.trim();
-        if (!field.validity.valid) {
+        const input = send.elements.email;
+        const email = input.value.trim();
+        if (!email || !input.validity.valid) {
             feedback.textContent = "Informe um e-mail válido.";
             return;
         }
-        if (email.toLowerCase() === current.textContent.toLowerCase()) {
-            feedback.textContent = "Informe um e-mail diferente do atual.";
+        if (kind === "trocar-email" && emailExists(email)) {
+            feedback.textContent = "Este e-mail já está cadastrado.";
             return;
         }
-
-        pendingEmail = email;
-        recipient.querySelector("p").textContent = `Enviado para ${pendingEmail}`;
-        recipient.hidden = false;
+        pending = email;
+        recipient.textContent = pending;
         send.hidden = true;
-        feedback.textContent = "";
-        verify.reset();
         verify.hidden = false;
-        code.focus();
-    });
-
-    document.querySelector("#edit-email-recipient").addEventListener("click", () => {
-        pendingEmail = "";
-        recipient.hidden = true;
-        verify.hidden = true;
         feedback.textContent = "";
+        verify.elements.code.focus();
+    });
+    block.querySelector("[data-edit]").addEventListener("click", () => {
+        pending = "";
+        verify.hidden = true;
         send.hidden = false;
+        feedback.textContent = "";
         send.elements.email.focus();
     });
-
     verify.addEventListener("submit", (event) => {
         event.preventDefault();
-        if (!pendingEmail || code.value.trim() !== mockSecurity.verificationCode) {
-            feedback.textContent = "Código inválido";
+        if (!pending || verify.elements.code.value.trim() !== mockSecurity.verificationCode) {
+            feedback.textContent = "Código inválido.";
             return;
         }
-
-        current.textContent = pendingEmail;
-        pendingEmail = "";
-        recipient.hidden = true;
-        verify.hidden = true;
-        verify.reset();
+        const result = updateAccount(profileId, kind === "recuperacao" ? { recoveryEmail: pending } : { email: pending });
+        if (!result) {
+            feedback.textContent = "Este e-mail já está cadastrado.";
+            return;
+        }
+        field(kind === "recuperacao" ? "recovery" : "email").textContent = pending;
+        pending = "";
         send.reset();
+        verify.reset();
+        verify.hidden = true;
         send.hidden = false;
-        feedback.textContent = "E-mail alterado!";
+        feedback.textContent = "E-mail salvo com sucesso.";
     });
 }
 
 function setupSecurity() {
-    setupEmail();
-
-    function openLinkedSection() {
-        const details = document.getElementById(location.hash.slice(1));
-        if (details instanceof HTMLDetailsElement) details.open = true;
-    }
-
-    window.addEventListener("hashchange", openLinkedSection);
-    openLinkedSection();
-
-    const recovery = document.querySelector("#recovery-email-form");
-    const feedback = recovery.querySelector('[role="status"]');
-    recovery.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const field = recovery.elements.email;
-        feedback.textContent = field.validity.valid
-            ? `E-mail de recuperação adicionado: ${field.value.trim()}`
-            : "Informe um e-mail válido.";
-    });
-
-    const devices = document.querySelector("#device-list");
-    const template = document.querySelector("#device-entry");
-    for (const device of mockSecurity.devices) {
-        const item = template.content.cloneNode(true);
-        item.querySelector('[data-field="name"]').textContent = device.isCurrent
-            ? `${device.name} (este dispositivo)` : device.name;
-        item.querySelector('[data-field="lastAccess"]').textContent = `Último acesso em ${formatDateTime(device.lastAccess)}`;
-        devices.append(item);
-    }
-}
-
-function setupPassword(form) {
+    field("email").textContent = profile.email;
+    field("recovery").textContent = profile.recoveryEmail || "ADICIONAR";
+    setupEmailFlow("recuperacao");
+    setupEmailFlow("trocar-email");
+    const form = document.querySelector("#change-password");
     const feedback = form.querySelector('[role="status"]');
     form.addEventListener("submit", (event) => {
         event.preventDefault();
         const password = form.elements.password.value;
         const repeat = form.elements.repeat.value;
-        if (!password.trim() || !repeat.trim()) {
-            feedback.textContent = "Preencha todos os campos para trocar a senha";
-        } else if (password.length < MINIMUM_PASSWORD_LENGTH) {
-            feedback.textContent = `A senha deve ter pelo menos ${MINIMUM_PASSWORD_LENGTH} caracteres.`;
-        } else if (password !== repeat) {
-            feedback.textContent = "As senhas precisam ser iguais.";
-        } else {
-            form.reset();
-            feedback.textContent = "Senha salva!";
+        let message = "";
+        if (!password || !repeat) message = "PREENCHA TODOS OS CAMPOS PARA TROCAR A SENHA";
+        else if (password.length < MINIMUM_PASSWORD_LENGTH) message = `A senha deve ter pelo menos ${MINIMUM_PASSWORD_LENGTH} caracteres.`;
+        else if (password !== repeat) message = "As senhas precisam ser iguais.";
+        form.querySelectorAll("fieldset").forEach((item) => item.toggleAttribute("data-invalid", Boolean(message)));
+        if (message) {
+            feedback.textContent = message;
+            return;
         }
+        updateAccount(profileId, { password });
+        form.reset();
+        feedback.textContent = "Senha alterada com sucesso.";
     });
 }
 
-const twoFactor = document.querySelector("#status");
-if (twoFactor) twoFactor.textContent = mockSecurity.twoFactorEnabled ? "ATIVADA" : "DESATIVADA";
+function setupDevices() {
+    const key = `agora-devices-${profileId}`;
+    const list = document.querySelector("#device-list");
+    const template = document.querySelector("#device-entry");
+    function render() {
+        const removed = JSON.parse(localStorage.getItem(key) || "[]");
+        const items = mockSecurity.devices.filter((device) => !removed.includes(device.name)).map((device) => {
+            const item = template.content.cloneNode(true);
+            item.querySelector('[data-field="name"]').textContent = device.name;
+            item.querySelector('[data-field="lastAccess"]').textContent = device.isCurrent ? "Este dispositivo" : `Último acesso: ${formatDate(device.lastAccess)}`;
+            const button = item.querySelector("button");
+            button.hidden = device.isCurrent;
+            button.addEventListener("click", () => {
+                localStorage.setItem(key, JSON.stringify([...removed, device.name]));
+                render();
+            });
+            return item;
+        });
+        list.replaceChildren(...items);
+    }
+    render();
+}
 
-const profileForm = document.querySelector("#profile-form");
-const passwordForm = document.querySelector("#change-password");
-if (profileForm) setupProfile(profileForm);
-if (document.querySelector("#security")) setupSecurity();
-if (passwordForm) setupPassword(passwordForm);
+function setupPrivacy() {
+    const feedback = document.querySelector("#privacy-feedback");
+    document.querySelector("#export-data").addEventListener("click", () => {
+        const { password, ...account } = getProfile(profileId);
+        const tasks = getTasksByProfile(profileId);
+        const history = getHistoryByProfile(profileId, tasks);
+        const url = URL.createObjectURL(new Blob([JSON.stringify({ account, tasks, history }, null, 4)], { type: "application/json" }));
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "agora-meus-dados.json";
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 0);
+        feedback.textContent = "Seus dados foram exportados.";
+    });
+    const confirmation = document.querySelector("#delete-confirmation");
+    document.querySelector("#delete-data").addEventListener("click", () => { confirmation.hidden = false; });
+    document.querySelector("#cancel-delete").addEventListener("click", () => { confirmation.hidden = true; });
+    document.querySelector("#confirm-delete").addEventListener("click", () => {
+        for (const [key, fallback] of [["agora-tasks", mockTasks], ["agora-history", mockHistory]]) {
+            const entries = JSON.parse(localStorage.getItem(key) || "null") ?? fallback;
+            localStorage.setItem(key, JSON.stringify(entries.filter((entry) => entry.profileId !== profileId)));
+        }
+        window.dispatchEvent(new Event("agora:tasks-change"));
+        confirmation.hidden = true;
+        feedback.textContent = "Tarefas e histórico apagados.";
+    });
+}
+
+if (profile) {
+    if (document.querySelector("#profile-form")) setupProfile();
+    if (document.querySelector("#security")) setupSecurity();
+    if (document.querySelector("#device-list")) setupDevices();
+    if (document.querySelector("#privacy")) setupPrivacy();
+}
 showStartupContent();

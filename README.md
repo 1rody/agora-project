@@ -4,25 +4,41 @@ Projeto desenvolvido pela empresa fictícia **SALVATECH**, para a matéria de Pr
 
 ## Como foi feito
 
-- Utilizamos **kebab-case** para todos os arquivos CSS  
-  Exemplo: `general-transitions.css`, `page-change.css`
-- Utilizamos **camelCase** para os arquivos HTML  
-  Exemplo: `index.html`, `loremIpsum.html`
-- Para Verificar as decisoes tomadas durante o desenvolvimento leia o DECISIONS.md
-  
-## Estrutura de pastas e arquivos.
-├── index.html <br/>
-└── styles/ <br/>
-├── animations/ <br/>
-│   ├── general-transitions.css <br/>
-│   ├── page-change.css <br/>
-│   └── scroll-animations.css <br/>
-├── components/ <br/>
-│   ├── buttons.css <br/>
-│   ├── forms.css <br/>
-│   └── misc.css <br/>
-└── effects/ <br/>
-└── liquid-glass.css
+- **HTML, CSS e JavaScript puros**, sem framework, sem build e sem `package.json`.
+- Arquivos CSS e JS em **PascalCase** (`Globals.css`, `App.js`); páginas HTML em PascalCase dentro de `src/pages/`.
+- O tema (claro/escuro) usa `prefers-color-scheme` e as variáveis de `src/styles/Theme.css`; o efeito de vidro está em `effects/LiquidGlass.css`.
+- Os dados são **mocks em módulos JS** (`src/data/`) persistidos em `localStorage`/`sessionStorage`. Por usar módulos ES, o projeto precisa ser aberto por um servidor HTTP (veja "Como rodar").
+- As decisões tomadas durante o desenvolvimento estão no [Decisions.md](./Decisions.md), junto com a participação de IA no projeto.
+
+## Estrutura de pastas e arquivos
+
+```
+index.html                  landing pública
+assets/icons/               ícones e logo
+src/
+├── login.html, Register.html, app.html
+├── pages/
+│   ├── Tarefas.html, TarefaAberta.html, History.html, NewTask.html
+│   ├── RecoverAccount.html, Terms.html
+│   ├── settings/           Settings, Security, Dispositivos, Privacidade
+│   └── support/            Support (Fale conosco, Sobre, Ajuda)
+├── scripts/                lógica de cada tela (Auth, Session, App, Tasks, Settings...)
+├── data/                   mocks e persistência (AccountMock, MockTask, HistoryMock...)
+└── styles/                 Globals.css, Theme.css e um arquivo por tela/componente
+```
+
+## Telas e fluxos
+
+- **Landing** (`index.html`): apresentação e acesso ao app.
+- **Autenticação**: login, registro com contas persistidas, termos, recuperação de conta por código e tela de entrada.
+- **Início**: estatísticas, disposição do dia, tempo até o próximo compromisso, recomendação e próximas tarefas (concluir e adiantar).
+- **Tarefas** e **Tarefa aberta**: filtros, dependências entre tarefas e ações de concluir/adiantar.
+- **Histórico**: tarefas concluídas, adiadas e canceladas, com filtros.
+- **Adicionar tarefa**: conversa em texto livre (ou voz, quando o navegador permite) que preenche prazo, título, tempo e prioridade.
+- **Configurações**: perfil, segurança (e-mail de recuperação, trocar e-mail e senha), dispositivos e privacidade (exportar ou apagar dados).
+- **Suporte**: fale conosco, como funciona (Sobre) e perguntas frequentes.
+
+Conta de teste: `jhon@mail.com` (senha em `src/data/AgoraMock.js`). O relógio do protótipo é fixo (`NOW` em `AgoraMock.js`).
 
 ## Como rodar
 

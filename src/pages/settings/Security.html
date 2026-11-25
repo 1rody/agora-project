@@ -3,84 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="../../styles/Globals.css">
-    <script type="module" src="../../scripts/Session.js"></script>
+    <link rel="stylesheet" href="../../styles/Settings.css">
     <script type="module" src="../../scripts/Settings.js"></script>
     <title>Agora - Segurança</title>
 </head>
 <body class="google-sans" data-requires-session>
     <p class="p-2" data-startup-message role="status">
-        <span>Se a página não carregar, abra o projeto pelo servidor HTTP local e acesse src/login.html.</span> <a class="text-primary" href="../../login.html">Ir para o login</a>
+        <span>Se a página não carregar, abra o projeto pelo servidor HTTP local.</span>
+        <a href="../../login.html">Ir para o login</a>
     </p>
     <div data-startup-content hidden>
-    <main id="security" class="flex flex-col w-full">
-        <header class="flex w-full items-center justify-center gap-1 pt-5">
-            <a class="glass rounded-xl p-1 text-xl text-primary" href="./Settings.html" aria-label="Voltar para configurações">←</a>
-            <h1 class="text-xl text-center">SEGURANÇA</h1>
-        </header>
-        <section id="senha-recuperacao" class="flex flex-col gap-1 p-2">
-            <details class="glass rounded-md p-2">
-                <summary class="text-primary">Trocar e-mail</summary>
-                <div class="flex flex-col gap-1 p-1">
-                    <p>E-mail atual <span id="current-email"></span></p>
-                    <form id="send-email-code" class="form-style" novalidate>
-                        <fieldset class="border-none flex flex-col">
-                            <label class="text-primary text-sm" for="new-email">Novo e-mail</label>
-                            <input id="new-email" name="email" class="rounded-md text-primary" type="email" autocomplete="email" required>
-                        </fieldset>
-                        <div class="form-btns p-1"><button class="primary-btn w-fit" type="submit">ENVIAR CÓDIGO</button></div>
-                    </form>
-                    <div id="email-recipient" hidden>
-                        <p class="text-sm"></p>
-                        <button id="edit-email-recipient" class="secondary-btn glass" type="button">TROCAR</button>
-                    </div>
-                    <form id="verify-email-code" class="form-style" novalidate hidden>
-                        <div class="flex flex-col gap-1">
-                            <fieldset class="border-none flex flex-col">
-                                <label class="text-primary text-sm" for="verification-code">Código de verificação</label>
-                                <input id="verification-code" name="code" class="rounded-md text-primary" type="text" inputmode="numeric" autocomplete="one-time-code" required>
-                            </fieldset>
-                            <div class="form-btns p-1"><button class="primary-btn w-fit" type="submit">ENVIAR CÓDIGO</button></div>
-                        </div>
-                    </form>
-                    <p id="email-feedback" class="text-sm" role="status"></p>
+        <main id="security" class="settings-page">
+            <header class="settings-header">
+                <a id="settings-back" class="settings-back glass" href="./Settings.html" aria-label="Voltar">←</a>
+                <h1 id="settings-title">SEGURANÇA</h1>
+            </header>
+            <section class="settings-section">
+                <div class="settings-row">
+                    <h2>SENHA E RECUPERAÇÃO</h2>
+                    <a class="settings-link" href="../support/Support.html#ajuda">PRECISA DE AJUDA?</a>
                 </div>
-            </details>
-            <a class="glass rounded-md p-2 text-primary" href="./recovery/ChangePass.html">Trocar senha</a>
-            <div class="glass rounded-md p-2 flex flex-wrap gap-1 justify-between">
-                <p>Verificação em dois fatores</p>
-                <span id="status"></span>
-                <a class="text-sm text-primary" href="../RecoverAccount.html">Perdeu acesso ao app de autenticação? Recupere sua conta clicando aqui!</a>
-            </div>
-            <details id="email-recuperacao" class="glass rounded-md p-2">
-                <summary class="text-primary">E-mail de recuperação</summary>
-                <form id="recovery-email-form" class="form-style" novalidate>
+                <div class="settings-row">
+                    <span>VERIFICAÇÃO DE DOIS FATORES</span>
+                    <strong class="settings-success">ATIVADA</strong>
+                </div>
+                <div class="settings-row">
+                    <span>E-MAIL DE RECUPERAÇÃO</span>
+                    <a class="settings-link" href="#recuperacao" data-field="recovery"></a>
+                </div>
+                <div class="settings-row">
+                    <span>E-MAIL: <span data-field="email"></span></span>
+                    <a class="settings-link" href="#trocar-email">MUDAR</a>
+                </div>
+            </section>
+            <section id="recuperacao" class="settings-section">
+                <h2>E-MAIL DE RECUPERAÇÃO</h2>
+                <form class="form-style settings-form" data-send novalidate>
                     <fieldset class="border-none flex flex-col">
-                        <label class="text-primary text-sm" for="recovery-email">E-mail de recuperação</label>
-                        <input id="recovery-email" name="email" class="rounded-md text-primary" type="email" autocomplete="email" required>
+                        <label for="recuperacao-email">E-MAIL</label>
+                        <input id="recuperacao-email" name="email" type="email" placeholder=" " autocomplete="email" required>
                     </fieldset>
-                    <div class="form-btns p-1"><button class="primary-btn w-fit" type="submit">ADICIONAR</button></div>
-                    <p class="text-sm" role="status"></p>
+                    <button class="settings-button" type="submit">ENVIAR CÓDIGO</button>
                 </form>
-            </details>
-            <details id="dispositivos" class="glass rounded-md p-2">
-                <summary class="text-primary">Gerenciar dispositivos</summary>
-                <ol id="device-list" class="flex flex-col gap-1 p-1"></ol>
-                <a class="text-sm text-primary" href="./recovery/ChangePass.html">Não reconhece algum dispositivo? Mude sua senha</a>
-            </details>
-        </section>
-        <template id="device-entry">
-            <li class="flex flex-col">
-                <p data-field="name"></p>
-                <p class="text-sm" data-field="lastAccess"></p>
-            </li>
-        </template>
-    </main>
+                <form class="form-style settings-form" data-verify novalidate hidden>
+                    <p>ENVIADO PARA <strong data-recipient></strong></p>
+                    <button class="settings-link text-button" data-edit type="button">TROCAR</button>
+                    <fieldset class="border-none flex flex-col">
+                        <label for="recuperacao-code">CÓDIGO DE VERIFICAÇÃO</label>
+                        <input id="recuperacao-code" name="code" type="text" placeholder=" " inputmode="numeric" autocomplete="one-time-code" required>
+                    </fieldset>
+                    <button class="settings-button" type="submit">ENVIAR CÓDIGO</button>
+                </form>
+                <p class="form-error" role="status"></p>
+            </section>
+            <section id="trocar-email" class="settings-section">
+                <h2>TROCAR E-MAIL</h2>
+                <form class="form-style settings-form" data-send novalidate>
+                    <fieldset class="border-none flex flex-col">
+                        <label for="trocar-email-email">E-MAIL</label>
+                        <input id="trocar-email-email" name="email" type="email" placeholder=" " autocomplete="email" required>
+                    </fieldset>
+                    <button class="settings-button" type="submit">ENVIAR CÓDIGO</button>
+                </form>
+                <form class="form-style settings-form" data-verify novalidate hidden>
+                    <p>ENVIADO PARA <strong data-recipient></strong></p>
+                    <button class="settings-link text-button" data-edit type="button">TROCAR</button>
+                    <fieldset class="border-none flex flex-col">
+                        <label for="trocar-email-code">CÓDIGO DE VERIFICAÇÃO</label>
+                        <input id="trocar-email-code" name="code" type="text" placeholder=" " inputmode="numeric" autocomplete="one-time-code" required>
+                    </fieldset>
+                    <button class="settings-button" type="submit">ENVIAR CÓDIGO</button>
+                </form>
+                <p class="form-error" role="status"></p>
+            </section>
+            <section id="trocar-senha" class="settings-section">
+                <h2>TROCAR SENHA</h2>
+                <form id="change-password" class="form-style settings-form" novalidate>
+                    <fieldset class="border-none flex flex-col">
+                        <label for="new-password">SENHA</label>
+                        <input id="new-password" name="password" type="password" placeholder=" " autocomplete="new-password" required>
+                    </fieldset>
+                    <fieldset class="border-none flex flex-col">
+                        <label for="repeat-password">REPITA A SENHA</label>
+                        <input id="repeat-password" name="repeat" type="password" placeholder=" " autocomplete="new-password" required>
+                    </fieldset>
+                    <button class="settings-button" type="submit">TROCAR SENHA</button>
+                    <p class="form-error" role="status"></p>
+                </form>
+            </section>
+        </main>
+        <footer class="settings-footer">
+            <nav id="navigation" class="flex items-center w-full justify-between p-1" aria-label="Navegação principal">
+                <ol class="flex items-center gap-1 glass rounded-xl p-1 justify-around">
+                    <li>
+                        <a href="../../app.html">
+                            <img src="../../../assets/icons/Brand.svg" alt="Início">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../Tarefas.html">
+                            <img src="../../../assets/icons/List.svg" alt="Tarefas">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./Settings.html" aria-current="page">
+                            <img src="../../../assets/icons/Settings.svg" alt="Configurações">
+                        </a>
+                    </li>
+                </ol>
+                <ol class="glass rounded-xl p-1">
+                    <li>
+                        <a href="../NewTask.html">
+                            <img src="../../../assets/icons/Create.svg" alt="Adicionar tarefa">
+                        </a>
+                    </li>
+                </ol>
+            </nav>
+        </footer>
     </div>
 </body>
 </html>
