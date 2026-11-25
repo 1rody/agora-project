@@ -8,17 +8,20 @@ export const mockAccount = {
     email: "jhon@mail.com",
     password: "123#4$*Aa1213",
     lastTimeOnline: "14/11/2026 : 14:07",
-    birthDate: "2003-04-15",
+    birthDate: "2000-06-10",
     pronouns: "Ele/dele",
-    memberSince: "2026-11-14",
+    memberSince: "2026-01-14",
 };
 
 export const mockSecurity = {
     verificationCode: "4313513345",
     twoFactorEnabled: true,
     devices: [
-        { name: "Celular · Navegador", lastAccess: NOW, isCurrent: true },
-        { name: "Computador · Navegador", lastAccess: "2027-07-18T19:15:00-03:00", isCurrent: false },
+        { name: "iPhone de Lucas", lastAccess: "2027-07-20T12:20:00-03:00", isCurrent: true },
+        { name: "Motorola G55", lastAccess: "2027-07-18T19:15:00-03:00", isCurrent: false },
+        { name: "Samsung A55", lastAccess: "2027-07-17T10:00:00-03:00", isCurrent: false },
+        { name: "iPad Pro de Rodolfo", lastAccess: "2027-07-16T12:00:00-03:00", isCurrent: false },
+        { name: "iPhone de Rodolfo", lastAccess: "2027-07-15T09:00:00-03:00", isCurrent: false },
     ],
 };
 

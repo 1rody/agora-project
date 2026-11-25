@@ -23,7 +23,7 @@
     <main id="app" class="w-full flex flex-col">
         <header data-profile id="profile" class="flex p-1 flex-col ">
             <div class="flex items-center gap-1 pt-5 text-xl">
-                <p>Bem-vindo(a)</p>
+                <p>Bem vindo,</p>
                 <p data-field="name"></p>
             </div>
             <time class="text-sm text-primary" data-field="lastTimeOnline"></time>
@@ -86,6 +86,10 @@
                     <p class="text-sm" data-field="description"></p>
                     <p class="recommendation-reason text-xs" role="status"><img src="../assets/icons/Info.svg" alt=""><span data-field="reason"></span></p>
                     <p id="task-timer" class="text-sm" hidden>Cronômetro <span role="timer">00:00</span></p>
+                    <div id="recommendation-actions" class="flex w-full items-center justify-between gap-1">
+                        <button id="recommendation-start" class="secondary-btn glass" type="button">INICIAR</button>
+                        <button id="recommendation-next" class="primary-btn" type="button">PRÓXIMA ›</button>
+                    </div>
                 </div>
             </article>
             <p id="recommendation-empty" class="glass rounded-md p-2" role="status" hidden>Nenhuma tarefa disponível para agora.</p>
@@ -102,7 +106,7 @@
         <nav id="navigation" class=" flex items-center  w-full justify-between p-1">
             <ol class="flex items-center gap-1 glass rounded-xl p-1 justify-around">
                 <li><a href="#" aria-current="page"><img src="../assets/icons/Brand.svg" alt="Início"></a></li>
-                <li><a href="./pages/History.html"><img src="../assets/icons/List.svg" alt="Histórico"></a></li>
+                <li><a href="./pages/Tarefas.html"><img src="../assets/icons/List.svg" alt="Tarefas"></a></li>
                 <li><a  href="./pages/settings/Settings.html"><img class="anim-rotating " src="../assets/icons/Settings.svg" alt="Configurações"></a></li>
             </ol>
             <ol class="glass rounded-xl p-1">

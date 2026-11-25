@@ -116,6 +116,10 @@
 .text-secondary {
     color: var(--text-secondary-color);
 }   
+.text-link { color: var(--link-blue); }
+.text-success { color: var(--success); }
+.text-error { color: var(--error); }
+.upper { text-transform: uppercase; }
 
 /* text-align */
 .text-left {

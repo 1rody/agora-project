@@ -1,6 +1,7 @@
 import { DAY_MS, dateKey, parseTaskDate } from "../data/TaskDates.js";
 
 const DEADLINE = /(?:\b(?:prazo(?:\s+(?:para|até))?|at[eé]|para(?:\s+o\s+dia)?)\s*[:=]?\s*)?\b(hoje|amanh[ãa]|\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}(?:\/\d{4})?)(?:(?:T|\s+(?:[àa]s\s+)?)(\d{1,2})(?::(\d{2})|h(\d{2})?))?(?![\d/])/iu;
+const RANGE = /\b(?:do\s+dia|desde(?:\s+o\s+dia)?|de)\s+(\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}(?:\/\d{4})?)\s+(?:at[eé]|a)\s+(?:o\s+)?(?:dia\s+)?(\d{4}-\d{2}-\d{2}|\d{1,2}(?:\/\d{1,2}(?:\/\d{4})?)?)(?![\d/])/iu;
 const DURATION = /(?:\b(?:tempo(?:\s+estimado)?|estimativa|dura[çc][ãa]o|leva(?:r[aá])?)\s*[:=]?\s*)?\b(?:(\d+(?:[.,]\d+)?)\s*(?:horas?|h)(?:\s*(?:e\s+)?(\d+)\s*(?:min(?:utos?)?)?)?|(\d+)\s*min(?:utos?)?)\b/iu;
 const MINUTES_WITH_LABEL = /\b(?:tempo(?:\s+estimado)?|estimativa|dura[çc][ãa]o)\s*[:=]\s*(\d+)\b/iu;
 const PRIORITY = /\b(?:com\s+)?prioridade\s*[:=]?\s*(alta|m[eé]dia|baixa)\b|(^|[,;\n])\s*(alta|m[eé]dia|baixa)\s*(?=[,;\n.!]|$)/iu;
@@ -29,7 +30,18 @@ function getDeadline(day, hour, minute, now) {
 export function readTaskMessage(message, now, missingFields = Object.keys(TASK_FIELDS)) {
     const fields = {};
 
-    let title = message.replace(DEADLINE, (_, day, hour, minute, hourMinutes) => {
+    let title = message.replace(RANGE, (_, start, end) => {
+        const startDate = getDeadline(start, undefined, undefined, now);
+        if (!startDate) return _;
+        // "até o dia 11" herda mês e ano do início
+        const endDate = /^\d{1,2}$/.test(end)
+            ? getDeadline(`${end}/${startDate.slice(5, 7)}/${startDate.slice(0, 4)}`, undefined, undefined, now)
+            : getDeadline(end, undefined, undefined, now);
+        if (!endDate) return _;
+        fields.startDate = startDate;
+        fields.endDate = endDate;
+        return ",";
+    }).replace(DEADLINE, (_, day, hour, minute, hourMinutes) => {
         fields.endDate = getDeadline(day, hour, minute ?? hourMinutes, now);
         return ",";
     });

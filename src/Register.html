@@ -1,61 +1,62 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="./styles/Globals.css">
-    <script type="module" src="./scripts/Auth.js"></script>
-
-
-    <title>Agora</title>
-</head>
-<body class="google-sans">
-    <p class="p-2" data-startup-message role="status">
-        <span>Se a página não carregar, abra o projeto pelo servidor HTTP local e acesse src/login.html.</span>
-    </p>
-    <div data-startup-content hidden>
-    <main id="register" class="w-full gap-1 overflow-hidden flex flex-col h-screen">
-        <form  id="register-form" novalidate class="p-1 form-style  flex text-primary flex-col items-center h-screen justify-center">
-            <div class="flex w-full items-center inversion-colors justify-center">
-                <img src="../assets/icons/logo.png" alt="Agora logo">
-            </div>
-            <div id="other-login" class="inversion-colors">
-              <button type="button" aria-disabled="true">G</button>
-              <button type="button" aria-disabled="true">G</button>
-              <button type="button" aria-disabled="true">G</button>
-            </div>
-            <fieldset class="border-none flex flex-col w-full">
-                <label for="email" class="text-primary text-sm">E-MAIL</label>
-                <input class="p-1 rounded-md text-primary bg-background" type="email" name="email" id="email" autocomplete="username" required>
-            </fieldset>
-            <fieldset class="border-none flex flex-col w-full">
-                <label for="password" class="text-primary text-sm">SENHA</label>
-                <input class="p-1 rounded-md text-primary bg-background" type="password" name="password" id="password" autocomplete="new-password" required>
-            </fieldset>
-            <fieldset class="border-none flex flex-col w-full">
-                <label for="repeat-password" class="text-primary text-sm">REPITA A SENHA</label>
-                <input class="p-1 rounded-md text-primary bg-background" type="password" name="repeat" id="repeat-password" autocomplete="new-password" required>
-            </fieldset>
-            <div class="p-1 text-sm">
-                <input type="checkbox" name="terms" id="terms" required>
-                <label for="terms">Concordo com os termos/política de privacidade</label>
-                <a class="text-primary" href="./pages/Terms.html">Termos de uso</a>
-            </div>
-            <p class="text-sm" role="status" data-field="message"></p>
-            <div class="form-btns flex items-center justify-center">
-                <button class="primary-btn" type="submit">REGISTRE-SE</button>
-                <p>OU</p>
-                <a class="text-sm text-primary" href="./login.html">LOGIN</a>
-            </div>
-
-        </form>
-    </main>
-    </div>
-</body>
-
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="./styles/Globals.css">
+        <link rel="stylesheet" href="./styles/Auth.css">
+        <script type="module" src="./scripts/Auth.js"></script>
+        <title>Agora - Registro</title>
+    </head>
+    <body class="google-sans">
+        <p class="p-2" data-startup-message role="status">
+            <span>Se a página não carregar, abra o projeto pelo servidor HTTP local e acesse src/login.html.</span>
+        </p>
+        <div data-startup-content hidden>
+            <main class="auth-page">
+                <form id="register-form" class="form-style auth-form" novalidate>
+                    <img class="auth-logo inversion-colors" src="../assets/icons/logo.png" alt="Agora">
+                    <div id="other-login">
+                        <button type="button" data-social-login aria-label="Entrar com Google">
+                            <img src="../assets/icons/Google.svg" alt="">
+                        </button>
+                        <button type="button" data-social-login aria-label="Entrar com nuvem">
+                            <img src="../assets/icons/Cloud.svg" alt="">
+                        </button>
+                        <button type="button" data-social-login aria-label="Entrar com Windows">
+                            <img src="../assets/icons/Windows.svg" alt="">
+                        </button>
+                    </div>
+                    <fieldset class="border-none">
+                        <label for="email" class="text-sm">E-MAIL</label>
+                        <input id="email" name="email" type="email" autocomplete="username" placeholder=" " required>
+                    </fieldset>
+                    <fieldset class="border-none">
+                        <label for="password" class="text-sm">SENHA</label>
+                        <input id="password" name="password" type="password" autocomplete="new-password" placeholder=" " required>
+                    </fieldset>
+                    <fieldset class="border-none">
+                        <label for="repeat-password" class="text-sm">REPITA A SENHA</label>
+                        <input id="repeat-password" name="repeat" type="password" autocomplete="new-password" placeholder=" " required>
+                    </fieldset>
+                    <div class="terms-consent">
+                        <input type="checkbox" name="terms" id="terms" required>
+                        <label for="terms">
+                            Concordo com os
+                            <a href="./pages/Terms.html">termos/política de privacidade</a>
+                        </label>
+                    </div>
+                    <p class="form-error" role="status" data-field="message"></p>
+                    <div class="form-btns">
+                        <button type="submit">Registrar-se</button>
+                        <span>OU</span>
+                        <a href="./login.html">LOGIN</a>
+                    </div>
+                </form>
+            </main>
+        </div>
+    </body>
 </html>

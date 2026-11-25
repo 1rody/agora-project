@@ -1,4 +1,4 @@
-import { PROFILE_ID } from "../data/AgoraMock.js";
+import { getProfile } from "../data/AccountMock.js";
 
 const SESSION_KEY = "agora-session";
 const loginUrl = new URL("../login.html", import.meta.url);
@@ -10,8 +10,12 @@ const openingHelp = startupText.textContent;
 let pageReady = false;
 let sessionAllowed = !requiresSession;
 
-export function startSession() {
-    sessionStorage.setItem(SESSION_KEY, PROFILE_ID);
+export function startSession(profileId) {
+    sessionStorage.setItem(SESSION_KEY, profileId);
+}
+
+export function getSessionProfileId() {
+    return sessionStorage.getItem(SESSION_KEY);
 }
 
 function updateVisibility() {
@@ -29,7 +33,7 @@ export function showStartupContent() {
 if (requiresSession && location.protocol !== "file:") {
     function checkSession() {
         try {
-            sessionAllowed = sessionStorage.getItem(SESSION_KEY) === PROFILE_ID;
+            sessionAllowed = Boolean(getProfile(getSessionProfileId()));
             if (sessionAllowed) localStorage.getItem("agora-tasks");
         } catch {
             sessionAllowed = false;

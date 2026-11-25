@@ -51,3 +51,9 @@
         flex: none;
     }
 }
+
+/* Botões de cartão de tarefa: cinza como no Figma */
+.task-btns-full .primary-btn {
+    color: #fff;
+    background-color: #5f6068;
+}

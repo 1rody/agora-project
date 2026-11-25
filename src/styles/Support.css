@@ -1,0 +1,98 @@
+.support-main {
+    padding: 2.5rem 1rem 7rem;
+}
+
+.support-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.support-header h1 {
+    font-size: 1.4rem;
+}
+
+.support-back {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+}
+
+.support-links, .support-faq, .support-about, .support-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.support-main [hidden] { display: none; }
+
+.support-links a, .support-faq details {
+    display: block;
+    padding: 1rem;
+    border-radius: 1.5rem;
+}
+
+.support-links { list-style: none; }
+
+.support-links a, .support-faq summary {
+    min-height: 44px;
+    font-weight: 700;
+}
+
+.support-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 3.5rem;
+}
+
+.support-faq summary { cursor: pointer; }
+.support-faq p { padding-top: .75rem; }
+.support-about p { font-size: .8rem; line-height: 1.5; }
+.support-about h2, .support-about section > h2 { text-align: center; font-size: .75rem; }
+.support-about .stat-cards { margin-top: .5rem; }
+.support-about .stat-card { min-width: 0; padding: .6rem; }
+.support-about .stat-bars { gap: 2px; }
+.support-about article { display: flex; flex-direction: column; gap: .75rem; }
+.support-about article[hidden] { display: none; }
+
+.support-form fieldset {
+    position: relative;
+    min-width: 0;
+    border: 0;
+    padding: .7rem 0 0;
+}
+
+.support-form label {
+    position: absolute;
+    top: 1.7rem;
+    left: 1rem;
+    padding: 0 .25rem;
+    background: var(--background-color);
+    font-weight: 700;
+    transition: top .2s;
+    pointer-events: none;
+}
+
+.support-form input, .support-form textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 3.1rem;
+    padding: 1rem;
+    border: 1px solid rgba(82, 84, 94, .65);
+    background: var(--background-color);
+    color: var(--text-color);
+    font: inherit;
+}
+
+.support-form fieldset:is(:hover, :focus-within, :has(input:not(:placeholder-shown)), :has(textarea:not(:placeholder-shown))) label { top: .2rem; }
+.support-form fieldset:focus-within label { color: var(--link-blue); }
+.support-form fieldset:focus-within :is(input, textarea) { border-color: var(--link-blue); }
+.support-form fieldset[data-invalid] label { color: var(--error); }
+.support-form fieldset[data-invalid] :is(input, textarea) { border-color: var(--error); }
+.support-main :focus-visible { outline: 3px solid var(--link-blue); outline-offset: 3px; }

@@ -11,8 +11,9 @@
     <link rel="stylesheet" href="../styles/Globals.css">
     <script type="module" src="../scripts/Session.js"></script>
     <script type="module">
-        import { showStartupContent } from "../scripts/Session.js";
-        import { NOW, PROFILE_ID } from "../data/AgoraMock.js";
+        import { getSessionProfileId, showStartupContent } from "../scripts/Session.js";
+        import { getProfile } from "../data/AccountMock.js";
+        import { NOW } from "../data/AgoraMock.js";
         import { addTask } from "../data/MockTask.js";
         import { parseTaskDate } from "../data/TaskDates.js";
         import { readTaskMessage, TASK_FIELDS } from "../scripts/TaskMessage.js";
@@ -23,21 +24,29 @@
         const template = document.querySelector("#created-task");
         let draft = {};
 
-        const showMessage = (text, author) => {
-            const row = document.createElement("div");
-            row.className = author === "user" ? "flex w-full justify-end" : "flex w-full justify-start";
-
-            const bubble = document.createElement("p");
-            bubble.className = author === "user" ? "chat-bubble chat-user rounded-xl p-1 text-sm" : "chat-bubble glass rounded-xl p-1 text-sm";
-            bubble.textContent = text;
-
-            row.append(bubble);
-            messages.append(row);
-            messages.scrollTop = messages.scrollHeight;
+        const userName = getProfile(getSessionProfileId())?.name?.trim().split(/\s+/)[0] || "VOCÊ";
+        const showMessage = (text, author, success = false) => {
+            const row = document.createElement("div"); row.className = "chat-message";
+            const label = document.createElement("strong"); label.className = "chat-author";
+            label.textContent = author === "user" ? userName.toLocaleUpperCase("pt-BR") : "AGORA IA";
+            const message = document.createElement("p"); message.textContent = text;
+            if (success) { message.className = "chat-success"; message.setAttribute("role", "status"); }
+            row.append(label, message); messages.append(row); messages.scrollTop = messages.scrollHeight;
         };
-
         showMessage("Deseja adicionar uma tarefa?", "bot");
         showMessage("Informe o prazo, título, tempo estimado e prioridade", "bot");
+        const mic = document.querySelector("#chat-mic");
+        const voiceStatus = document.querySelector("#voice-status");
+        const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!Recognition) { mic.disabled = true; mic.title = "Seu navegador não suporta voz"; }
+        else {
+            const recognition = new Recognition(); recognition.lang = "pt-BR";
+            recognition.onstart = () => { voiceStatus.textContent = "Ouvindo..."; mic.setAttribute("aria-pressed", "true"); };
+            recognition.onend = () => { voiceStatus.textContent = ""; mic.setAttribute("aria-pressed", "false"); };
+            recognition.onerror = () => { voiceStatus.textContent = "Não foi possível reconhecer a fala."; };
+            recognition.onresult = (event) => { form.elements.message.value = event.results[0][0].transcript; form.elements.message.focus(); };
+            mic.addEventListener("click", () => { if (mic.getAttribute("aria-pressed") === "true") recognition.stop(); else recognition.start(); });
+        }
 
         const getMissing = () => Object.keys(TASK_FIELDS).filter((field) => !draft[field]);
 
@@ -62,13 +71,13 @@
 
             const task = addTask({
                 ...draft,
-                profileId: PROFILE_ID,
+                profileId: getSessionProfileId(),
                 description: "",
-                startDate: parseTaskDate(draft.endDate, true) < NOW ? "" : NOW.toISOString(),
+                startDate: draft.startDate ?? (parseTaskDate(draft.endDate, true) < NOW ? "" : NOW.toISOString()),
                 scheduled: false,
             });
             draft = {};
-            showMessage("✓ Evento criado com sucesso", "bot");
+            showMessage("Evento criado com sucesso", "bot", true);
             const card = template.content.cloneNode(true);
             fillTaskCard(card, task);
             messages.append(card);
@@ -85,29 +94,10 @@
         <span>Se a página não carregar, abra o projeto pelo servidor HTTP local e acesse src/login.html.</span> <a class="text-primary" href="../login.html">Ir para o login</a>
     </p>
     <div data-startup-content hidden>
-    <main id="new-task" class="w-full gap-1 items-center justify-center overflow-hidden flex flex-col h-screen">
-        <header class="flex w-full items-center  justify-center gap-1 p-1 pt-5">
-            <a class="glass rounded-xl p-1 text-xl text-primary" href="../app.html">←</a>
-            <h1 class="text-xl text-center">Agora IA</h1>
-        </header>
-        <section id="messages" class="chat-messages overflow-hidden flex flex-col gap-1 p-1 w-full" role="log" aria-label="Conversa com a Agora IA"></section>
-        <form id="chat-form" class="flex w-full items-center gap-1 p-1">
-            <div class="flex w-full items-center gap-1 glass rounded-xl p-1">
-                <input class="chat-input w-full p-1 text-primary border-none" placeholder="Digite sua resposta" type="text" name="message" id="message" autocomplete="off" aria-label="Mensagem para a Agora IA">
-                <button class="rounded-xl p-1 border-none" type="button" aria-label="Microfone" aria-disabled="true">🎙</button>
-                <button class="chat-send rounded-xl p-1" type="submit">Enviar</button>
-            </div>
-        </form>
+    <main id="new-task" class="w-full flex flex-col">
+        <header class="chat-header"><a class="chat-back glass" href="../app.html" aria-label="Voltar para o início">←</a><h1>ADIC. TAREFA</h1></header>
+        <section id="messages" class="chat-messages" role="log" aria-label="Conversa com a Agora IA" aria-live="polite"></section>
+        <form id="chat-form" class="chat-form"><p id="voice-status" class="voice-status" role="status"></p><div class="chat-controls"><button id="chat-mic" class="chat-icon glass" type="button" aria-label="Usar microfone" aria-pressed="false"><img src="../../assets/icons/Mic.svg" alt=""></button><div class="chat-entry glass"><input class="chat-input" placeholder="Digite sua resposta" type="text" name="message" id="message" autocomplete="off" aria-label="Mensagem para a Agora IA"><button class="chat-icon chat-submit" type="submit" aria-label="Enviar mensagem"><img src="../../assets/icons/Search.svg" alt=""></button></div></div></form>
     </main>
-    <template id="created-task">
-        <article class="glass rounded-md p-2 flex flex-col">
-            <h2 class="text-lg" data-field="name"></h2>
-            <p data-field="estimatedTime"></p>
-            <p class="text-sm" data-field="priority"></p>
-            <p class="text-sm" data-field="period"></p>
-        </article>
-    </template>
-    </div>
-</body>
+    <template id="created-task"><article class="chat-task glass rounded-md"><div class="chat-task-title"><h2 class="task-title" data-field="name"></h2><span class="text-xs priority" data-field="priority"></span></div><span class="task-time" data-field="estimatedTime"></span><p class="text-xs" data-field="period"></p></article></template>
 
-</html>

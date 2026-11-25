@@ -1,46 +1,64 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="../styles/Globals.css">
-    <script type="module" src="../scripts/Auth.js"></script>
-    <title>Agora - Recuperar conta</title>
-</head>
-<body class="google-sans">
-    <p class="p-2" data-startup-message role="status">
-        <span>Se a página não carregar, abra o projeto pelo servidor HTTP local e acesse src/login.html.</span>
-    </p>
-    <div data-startup-content hidden>
-    <main id="recover-account" class="flex flex-col w-full gap-1">
-        <header class="flex w-full items-center justify-center gap-1 pt-5">
-            <a class="glass rounded-xl p-1 text-xl text-primary" href="../login.html" aria-label="Voltar ao login">←</a>
-            <h1 class="text-xl text-center">Esqueceu a senha ou e-mail?</h1>
-        </header>
-        <section class="p-2">
-            <form id="recovery-email-form" class="form-style" novalidate>
-                <fieldset class="border-none flex flex-col">
-                    <label class="text-primary text-sm" for="account-recovery-email">E-MAIL</label>
-                    <input class="rounded-md text-primary" id="account-recovery-email" name="email" type="email" autocomplete="email" required>
-                </fieldset>
-                <div class="form-btns"><button type="submit">ENVIAR CÓDIGO</button></div>
-            </form>
-            <p id="recovery-sent" class="p-1" role="status" hidden>E-mail de recuperação enviado!</p>
-            <form id="recovery-code-form" class="form-style" novalidate hidden>
-                <fieldset class="border-none flex flex-col">
-                    <label class="text-primary text-sm" for="account-recovery-code">Código de verificação</label>
-                    <input class="rounded-md text-primary" id="account-recovery-code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" required>
-                </fieldset>
-                <div class="form-btns"><button type="submit">ENVIAR CÓDIGO</button></div>
-            </form>
-            <p class="text-sm p-1" data-field="message" role="status"></p>
-            <a id="recovery-login" class="text-primary p-1" href="../login.html" hidden>Voltar ao login</a>
-        </section>
-    </main>
-    </div>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="../styles/Globals.css">
+        <link rel="stylesheet" href="../styles/Auth.css">
+        <script type="module" src="../scripts/Auth.js"></script>
+        <title>Agora - Recuperar conta</title>
+    </head>
+    <body class="google-sans">
+        <p class="p-2" data-startup-message role="status">
+            <span>Se a página não carregar, abra o projeto pelo servidor HTTP local e acesse src/login.html.</span>
+        </p>
+        <div data-startup-content hidden>
+            <main id="recover-account" class="auth-page recovery">
+                <div class="recovery-content">
+                    <h1>RECUPERAR CONTA</h1>
+                    <img class="auth-logo inversion-colors" src="../../assets/icons/logo.png" alt="Agora">
+                    <form id="recovery-email-form" class="form-style" novalidate>
+                        <fieldset class="border-none">
+                            <label for="account-recovery-email" class="text-sm">E-MAIL</label>
+                            <input id="account-recovery-email" name="email" type="email" autocomplete="email" placeholder=" " required>
+                        </fieldset>
+                        <div class="form-btns">
+                            <button type="submit">ENVIAR CÓDIGO</button>
+                        </div>
+                    </form>
+                    <form id="recovery-code-form" class="form-style" novalidate hidden>
+                        <fieldset class="border-none">
+                            <label for="account-recovery-code" class="text-sm">CÓDIGO DE VERIFICAÇÃO</label>
+                            <input id="account-recovery-code" name="code" type="text" autocomplete="one-time-code" placeholder=" " required>
+                        </fieldset>
+                        <div class="form-btns">
+                            <button type="submit">CONFIRMAR CÓDIGO</button>
+                        </div>
+                    </form>
+                    <form id="recovery-password-form" class="form-style" novalidate hidden>
+                        <fieldset class="border-none">
+                            <label for="recovery-password" class="text-sm">NOVA SENHA</label>
+                            <input id="recovery-password" name="password" type="password" autocomplete="new-password" placeholder=" " required>
+                        </fieldset>
+                        <fieldset class="border-none">
+                            <label for="recovery-repeat" class="text-sm">REPITA A SENHA</label>
+                            <input id="recovery-repeat" name="repeat" type="password" autocomplete="new-password" placeholder=" " required>
+                        </fieldset>
+                        <div class="form-btns">
+                            <button type="submit">ALTERAR SENHA</button>
+                        </div>
+                    </form>
+                    <p class="form-error" data-field="message" role="status"></p>
+                    <div class="recovery-login">
+                        <span>OU</span>
+                        <a href="../login.html">LOGIN</a>
+                    </div>
+                </div>
+                <p class="recovery-footer">Esqueceu a senha ou o e-mail? Recupere sua conta digitando seu e-mail, telefone ou código.</p>
+            </main>
+        </div>
+    </body>
 </html>
