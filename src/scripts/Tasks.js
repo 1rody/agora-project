@@ -46,17 +46,12 @@ function renderDetail(tasks) {
     document.querySelector("#task-not-found").hidden = Boolean(task);
     detail.hidden = !task;
     if (!task) return;
-    fillTaskCard(detail, task);
+    fillTaskCard(document.querySelector("main"), task);
     detail.querySelector('[data-field="priority"]').textContent = detail.querySelector('[data-field="priority"]').textContent.replace(/^Prioridade /, "");
     detail.querySelector('[data-field="status"]').textContent = task.status.toLocaleUpperCase("pt-BR");
-    detail.querySelector('[data-field="description"]').textContent = task.description?.trim() || "Sem descrição.";
-    const buttons = document.querySelector("#detail-actions");
-    const replacement = buttons.cloneNode(true);
-    buttons.replaceWith(replacement);
-    replacement.hidden = !isInQueue(task);
-    if (isInQueue(task)) actions.bindActions(replacement, task, canAdvance(task, tasks));
+    detail.querySelector('[data-field="description"]').textContent = task.description?.trim() ?? "";
     const linked = task.idsVinculados.map((id) => tasks.find((item) => item.id === id)).filter(Boolean);
-    document.querySelector("#linked-list").replaceChildren(...linked.map((item) => makeCard(item, tasks, false)));
+    document.querySelector("#linked-list").replaceChildren(...linked.map((item) => makeCard(item, tasks)));
     document.querySelector("#linked-empty").hidden = linked.length > 0;
 }
 function render() {

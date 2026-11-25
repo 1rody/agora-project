@@ -21,7 +21,10 @@
             <main class="tasks-page" data-page="detail">
                 <header class="tasks-header">
                     <a class="back-link glass" href="./Tarefas.html" aria-label="Voltar para tarefas">←</a>
-                    <h1>TAREFA ABERTA</h1>
+                    <div class="tasks-header-text">
+                        <h1 data-field="name">TAREFA ABERTA</h1>
+                        <p data-field="period"></p>
+                    </div>
                 </header>
                 <p id="task-feedback" role="status"></p>
                 <p id="task-not-found" role="status" hidden>
@@ -29,8 +32,6 @@
                     <a href="./Tarefas.html">Voltar</a>
                 </p>
                 <article id="task-detail" hidden>
-                    <h2 class="task-title" data-field="name"></h2>
-                    <p data-field="period"></p>
                     <dl class="task-details">
                         <div>
                             <dt>TEMPO ESTIMADO</dt>
@@ -45,14 +46,12 @@
                             <dd class="task-status" data-field="status"></dd>
                         </div>
                     </dl>
-                    <section class="glass rounded-md p-2">
+                    <section>
                         <h3>DESCRIÇÃO</h3>
-                        <p data-field="description"></p>
+                        <div class="description-box glass rounded-md p-2">
+                            <p data-field="description"></p>
+                        </div>
                     </section>
-                    <div class="task-btns flex items-center gap-1" id="detail-actions">
-                        <button class="secondary-btn glass" data-action="complete" type="button">CONCLUIR</button>
-                        <button class="primary-btn" data-action="advance" type="button">ADIANTAR</button>
-                    </div>
                     <section>
                         <h3>TAREFAS VINCULADAS</h3>
                         <div id="linked-list" class="tasks-list"></div>
@@ -89,18 +88,20 @@
                 </nav>
             </footer>
             <template id="task-card">
-                <article class="task-card glass rounded-md p-2">
-                    <a class="task-card-link" data-field="link">
-                        <span class="task-time" data-field="estimatedTime"></span>
-                        <span class="task-card-heading">
-                            <strong class="task-title" data-field="name"></strong>
-                            <span class="text-xs priority" data-field="priority"></span>
-                        </span>
-                        <span class="text-xs" data-field="period"></span>
+                <article class="task-card flex flex-col p-2 glass rounded-md">
+                    <a class="task-card-link w-full text-right" data-field="link">
+                        <strong class="task-title text-primary" data-field="name"></strong>
+                        <span class="block text-xs priority" data-field="priority"></span>
                     </a>
-                    <div class="task-btns flex items-center gap-1">
-                        <button class="secondary-btn glass" data-action="complete" type="button">CONCLUIR</button>
-                        <button class="primary-btn" data-action="advance" type="button">ADIANTAR</button>
+                    <div class="flex w-full flex-wrap items-center justify-between gap-1">
+                        <div class="flex flex-col">
+                            <span class="task-time" data-field="estimatedTime"></span>
+                            <span class="text-xs" data-field="period"></span>
+                        </div>
+                        <div class="task-btns task-btns-full flex items-center gap-1">
+                            <button class="secondary-btn glass" data-action="complete" type="button">CONCLUIR</button>
+                            <button class="primary-btn" data-action="advance" type="button">ADIANTAR</button>
+                        </div>
                     </div>
                 </article>
             </template>

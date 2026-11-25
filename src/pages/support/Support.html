@@ -135,9 +135,9 @@
                         <img data-active-ring src="../../../assets/icons/FaceFrown.svg" alt="">
                     </button>
                 </div>
-                <p>O Agora ajuda você a decidir o que faz sentido fazer agora. A recomendação considera sua disposição, o tempo até o próximo compromisso, a prioridade, a urgência e o prazo de cada tarefa. Uma tarefa vinculada fica disponível assim que todas as suas dependências forem concluídas.</p>
+                <p>Ao selecionar um dos rostos, você escolhe a sua escala de disposição: quanto mais escura a cor, mais disposto você está, indo de uma cara feliz a uma triste. Assim, o Agora define a tarefa ideal para agora e quais você pode ou não antecipar, com base no tempo estimado que você escreveu sobre ela.</p>
                 <section id="support-stats" aria-labelledby="support-stats-title">
-                    <h2 id="support-stats-title" class="text-xs link-blue">ESTATÍSTICAS</h2>
+                    <h2 id="support-stats-title" class="text-xs">ESTATÍSTICAS</h2>
                     <div class="stat-cards flex">
                         <p class="stat-card glass rounded-md">
                             <span class="stat-top"><span class="stat-number" data-field="old"></span><span class="stat-bars" aria-hidden="true"><i style="height:23px"></i><i style="height:29px"></i><i style="height:16px"></i></span></span>
@@ -153,18 +153,16 @@
                         </p>
                     </div>
                 </section>
-                <p>Com base na sua disposição escolhida, o Agora recomenda uma tarefa que cabe no seu tempo disponível.</p>
+                <p>Com base na sua disposição escolhida e no seu histórico, acompanhe os seus indicadores de desempenho diário.</p>
                 <h2 class="text-xs">TAREFA</h2>
                 <article id="support-recommendation" class="glass rounded-md p-2" hidden>
-                    <div class="flex w-full items-start justify-between gap-1">
-                        <div class="flex flex-col">
-                            <span class="task-time" data-field="estimatedTime"></span>
-                            <p class="text-xs" data-field="period"></p>
-                        </div>
-                        <div class="flex flex-col items-end text-right">
-                            <h3 class="task-title text-primary" data-field="name"></h3>
-                            <span class="text-xs priority" data-field="priority"></span>
-                        </div>
+                    <div class="flex flex-col items-end text-right">
+                        <h3 class="task-title text-primary" data-field="name"></h3>
+                        <span class="text-xs priority" data-field="priority"></span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="task-time" data-field="estimatedTime"></span>
+                        <p class="text-xs" data-field="period"></p>
                     </div>
                     <p class="text-sm" data-field="description"></p>
                     <p class="recommendation-reason text-xs" role="status">

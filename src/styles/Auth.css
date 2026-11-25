@@ -24,6 +24,8 @@
 .terms-page header a { display: grid; place-items: center; min-width: 44px; min-height: 44px; box-sizing: border-box; }
 .terms-panel { overflow-y: auto; }
 .terms-panel > section { flex-shrink: 0; }
+.terms-panel > section.glass { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; backdrop-filter: none; font-size: .8rem; }
+.terms-panel > section.glass::before, .terms-panel > section.glass::after { display: none; }
 .terms-panel p, .terms-panel li { line-height: 1.5; }
 .entering-overlay { position: fixed; z-index: 1000; inset: 0; background: var(--background-color); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; }
 .entering-progress { width: min(10rem, 50vw); height: 6px; background: var(--stroke-color); border-radius: 1rem; overflow: hidden; }

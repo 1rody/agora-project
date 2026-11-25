@@ -25,24 +25,24 @@
                 </header>
                 <section class="tasks-filters" aria-label="Filtros de tarefas">
                     <label>
-                        ORDENAR
+                        <span class="sr-only">Ordenar</span>
                         <select id="task-order">
-                            <option value="az">A–Z</option>
-                            <option value="deadline">Prazo</option>
-                            <option value="priority">Prioridade</option>
+                            <option value="az">ORDENAR A-Z</option>
+                            <option value="deadline">ORDENAR POR PRAZO</option>
+                            <option value="priority">ORDENAR POR PRIORIDADE</option>
                         </select>
                     </label>
                     <label>
-                        PRIORIDADE
+                        <span class="sr-only">Prioridade</span>
                         <select id="task-priority">
-                            <option value="">Todas</option>
-                            <option value="low">Baixa</option>
-                            <option value="medium">Média</option>
-                            <option value="high">Alta</option>
+                            <option value="">PRIORIDADE: TODAS</option>
+                            <option value="low">PRIORIDADE: BAIXA</option>
+                            <option value="medium">PRIORIDADE: MÉDIA</option>
+                            <option value="high">PRIORIDADE: ALTA</option>
                         </select>
                     </label>
                     <label>
-                        DATA
+                        <span class="sr-only">Data</span>
                         <input id="task-date" type="date">
                     </label>
                 </section>
@@ -81,18 +81,20 @@
                 </nav>
             </footer>
             <template id="task-card">
-                <article class="task-card glass rounded-md p-2">
-                    <a class="task-card-link" data-field="link">
-                        <span class="task-time" data-field="estimatedTime"></span>
-                        <span class="task-card-heading">
-                            <strong class="task-title" data-field="name"></strong>
-                            <span class="text-xs priority" data-field="priority"></span>
-                        </span>
-                        <span class="text-xs" data-field="period"></span>
+                <article class="task-card flex flex-col p-2 glass rounded-md">
+                    <a class="task-card-link w-full text-right" data-field="link">
+                        <strong class="task-title text-primary" data-field="name"></strong>
+                        <span class="block text-xs priority" data-field="priority"></span>
                     </a>
-                    <div class="task-btns flex items-center gap-1">
-                        <button class="secondary-btn glass" data-action="complete" type="button">CONCLUIR</button>
-                        <button class="primary-btn" data-action="advance" type="button">ADIANTAR</button>
+                    <div class="flex w-full flex-wrap items-center justify-between gap-1">
+                        <div class="flex flex-col">
+                            <span class="task-time" data-field="estimatedTime"></span>
+                            <span class="text-xs" data-field="period"></span>
+                        </div>
+                        <div class="task-btns task-btns-full flex items-center gap-1">
+                            <button class="secondary-btn glass" data-action="complete" type="button">CONCLUIR</button>
+                            <button class="primary-btn" data-action="advance" type="button">ADIANTAR</button>
+                        </div>
                     </div>
                 </article>
             </template>
