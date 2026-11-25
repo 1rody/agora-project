@@ -1,4 +1,14 @@
+body[data-requires-session] main {
+    width: 100%;
+    max-width: 28rem;
+    margin-inline: auto;
+    box-sizing: border-box;
+}
 #navigation {
+    width: 100%;
+    max-width: 28rem;
+    box-sizing: border-box;
+    margin-inline: auto;
     a {
         padding: .5rem;
         border-radius: 2rem;
@@ -27,6 +37,11 @@
         
     }
 }
+#navigation a[aria-current="page"] {
+    background: var(--link-blue);
+}
+#navigation a[aria-current="page"] img { filter: brightness(0) invert(1); }
+#navigation a:focus-visible { outline: 2px solid var(--link-blue); outline-offset: 2px; }
 @media (prefers-color-scheme: dark) {
 #navigation {
     img {

@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="../styles/Globals.css">
     <script type="module" src="../scripts/Session.js"></script>
     <script type="module">
-        import { showStartupContent } from "../scripts/Session.js";
-        import { NOW, PROFILE_ID } from "../data/AgoraMock.js";
+        import { getSessionProfileId, showStartupContent } from "../scripts/Session.js";
+        import { NOW } from "../data/AgoraMock.js";
         import { addTask } from "../data/MockTask.js";
         import { parseTaskDate } from "../data/TaskDates.js";
         import { readTaskMessage, TASK_FIELDS } from "../scripts/TaskMessage.js";
@@ -62,7 +62,7 @@
 
             const task = addTask({
                 ...draft,
-                profileId: PROFILE_ID,
+                profileId: getSessionProfileId(),
                 description: "",
                 startDate: parseTaskDate(draft.endDate, true) < NOW ? "" : NOW.toISOString(),
                 scheduled: false,

@@ -1,4 +1,5 @@
-import { NOW, PROFILE_ID } from "../data/AgoraMock.js";
+import { getSessionProfileId } from "./Session.js";
+import { NOW } from "../data/AgoraMock.js";
 import { PRIORITY_LABELS, getTasksByProfile, updateTask } from "../data/MockTask.js";
 import { MINUTE_MS, formatTaskPeriod, parseTaskDate } from "../data/TaskDates.js";
 import { fitsAvailableTime, getAvailableMinutes, getNextCommitment, getUpcomingTasks, isBlocked, isInQueue } from "./Recommendation.js";
@@ -45,7 +46,7 @@ export function setupUpcomingTasks(container) {
     let cancelConfirmation = () => {};
 
     function completeTask(id) {
-        const tasks = getTasksByProfile(PROFILE_ID);
+        const tasks = getTasksByProfile(getSessionProfileId());
         const task = tasks.find((item) => item.id === id && isInQueue(item));
         if (!task) return;
         if (hasPendingDependencies(task, tasks)) {
@@ -60,7 +61,7 @@ export function setupUpcomingTasks(container) {
     }
 
     function advanceTask(id) {
-        const tasks = getTasksByProfile(PROFILE_ID);
+        const tasks = getTasksByProfile(getSessionProfileId());
         const task = getUpcomingTasks(tasks, NOW).find((item) => item.id === id);
         if (!task) return;
         if (tasks.some((item) => item.status === "em andamento")) {

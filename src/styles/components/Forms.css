@@ -88,3 +88,12 @@
         }
     }
 }
+
+.form-style fieldset:is(:hover, :focus-within, :has(input[placeholder]:not(:placeholder-shown))) label {
+    top: .6rem;
+}
+.form-style fieldset:focus-within label { color: var(--link-blue); }
+.form-style fieldset:focus-within input { border-color: var(--link-blue); outline-color: var(--link-blue); }
+.form-style fieldset:is([data-invalid], :has(input[aria-invalid="true"])) label { color: var(--error); }
+.form-style fieldset:is([data-invalid], :has(input[aria-invalid="true"])) input { border-color: var(--error); outline-color: var(--error); }
+.form-error { color: var(--error); font-size: .8rem; text-align: center; }

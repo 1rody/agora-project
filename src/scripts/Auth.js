@@ -1,5 +1,5 @@
-import { login } from "../data/AccountMock.js";
-import { MINIMUM_PASSWORD_LENGTH, mockSecurity } from "../data/AgoraMock.js";
+import { addAccount, login } from "../data/AccountMock.js";
+import { MINIMUM_PASSWORD_LENGTH, PROFILE_ID, mockSecurity } from "../data/AgoraMock.js";
 import { showStartupContent, startSession } from "./Session.js";
 
 const form = document.querySelector("#login-form, #register-form");
@@ -16,7 +16,7 @@ if (form) {
         for (const button of form.querySelectorAll("[data-social-login]")) button.disabled = false;
     }
 
-    function enter() {
+    function enter(profileId) {
         if (entering) return;
         entering = true;
         feedback.textContent = "";
@@ -25,7 +25,7 @@ if (form) {
         for (const button of form.querySelectorAll("[data-social-login]")) button.disabled = true;
         setTimeout(() => {
             try {
-                startSession();
+                startSession(profileId);
             } catch {
                 resetEntry();
                 feedback.textContent = "O navegador bloqueou o armazenamento da sessão.";
@@ -57,11 +57,18 @@ if (form) {
         } else if (!registering && !login(email.value.trim().toLowerCase(), password.value)) {
             feedback.textContent = "E-mail ou senha incorretos.";
         } else {
-            enter();
+            const account = registering
+                ? addAccount(email.value.trim().split("@")[0], email.value.trim(), password.value)
+                : login(email.value.trim(), password.value);
+            if (!account) {
+                feedback.textContent = "Este e-mail já está cadastrado.";
+                return;
+            }
+            enter(account.id);
         }
     });
 
-    for (const button of form.querySelectorAll("[data-social-login]")) button.addEventListener("click", enter);
+    for (const button of form.querySelectorAll("[data-social-login]")) button.addEventListener("click", () => enter(PROFILE_ID));
     window.addEventListener("pageshow", (event) => {
         if (event.persisted && entering) resetEntry();
     });

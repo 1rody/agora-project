@@ -11,8 +11,7 @@
     <link rel="stylesheet" href="../styles/Globals.css">
     <script type="module" src="../scripts/Session.js"></script>
     <script type="module">
-        import { showStartupContent } from "../scripts/Session.js";
-        import { PROFILE_ID } from "../data/AgoraMock.js";
+        import { getSessionProfileId, showStartupContent } from "../scripts/Session.js";
         import { getHistoryByProfile, isTaskHistoryStatus } from "../data/HistoryMock.js";
         import { PRIORITY_LABELS, getTasksByProfile, subscribeToTasks } from "../data/MockTask.js";
         import { dateKey, formatTaskPeriod, parseTaskDate } from "../data/TaskDates.js";
@@ -27,7 +26,7 @@
         const alphabetical = new Intl.Collator("pt-BR", { sensitivity: "base" });
 
         function renderHistory() {
-            const entries = getHistoryByProfile(PROFILE_ID, getTasksByProfile(PROFILE_ID))
+            const entries = getHistoryByProfile(getSessionProfileId(), getTasksByProfile(getSessionProfileId()))
                 .filter((entry) => isTaskHistoryStatus(entry.action))
                 .filter((entry) => !priority.value || entry.priority === priority.value)
                 .filter((entry) => !date.value || dateKey(entry.date) === date.value)

@@ -1,6 +1,6 @@
-import { showStartupContent } from "./Session.js";
+import { getSessionProfileId, showStartupContent } from "./Session.js";
 import { getProfile } from "../data/AccountMock.js";
-import { NOW, PROFILE_ID } from "../data/AgoraMock.js";
+import { NOW } from "../data/AgoraMock.js";
 import { PRIORITY_LABELS, getTasksByProfile, subscribeToTasks } from "../data/MockTask.js";
 import { formatDateTime, parseTaskDate } from "../data/TaskDates.js";
 import {
@@ -33,7 +33,7 @@ function formatElapsed(milliseconds) {
 }
 
 function setupHome(home) {
-    const profile = getProfile(PROFILE_ID);
+    const profile = getProfile(getSessionProfileId());
     const header = home.querySelector("#profile");
     const stats = home.querySelector("#stats");
     const nextTask = home.querySelector("#next-task");

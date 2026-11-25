@@ -12,8 +12,7 @@
     <script type="module" src="../../scripts/Session.js"></script>
     <title>Agora - Suporte</title>
     <script type="module">
-        import { showStartupContent } from "../../scripts/Session.js";
-        import { PROFILE_ID } from "../../data/AgoraMock.js";
+        import { getSessionProfileId, showStartupContent } from "../../scripts/Session.js";
         import { getTasksByProfile, subscribeToTasks } from "../../data/MockTask.js";
         import { bindDisposition } from "../../scripts/Disposition.js";
         import { clearAdvancedTask, setupUpcomingTasks } from "../../scripts/UpcomingTasks.js";
@@ -45,7 +44,7 @@
         });
 
         const renderUpcoming = setupUpcomingTasks(document.querySelector("#tasks"));
-        const refreshTasks = () => renderUpcoming(getTasksByProfile(PROFILE_ID));
+        const refreshTasks = () => renderUpcoming(getTasksByProfile(getSessionProfileId()));
         bindDisposition(document.querySelector('#sobre [role="group"]'), (changed) => {
             if (changed) clearAdvancedTask();
         });

@@ -1,9 +1,9 @@
-import { showStartupContent } from "./Session.js";
+import { getSessionProfileId, showStartupContent } from "./Session.js";
 import { getProfile } from "../data/AccountMock.js";
-import { MINIMUM_PASSWORD_LENGTH, NOW, PROFILE_ID, mockSecurity } from "../data/AgoraMock.js";
+import { MINIMUM_PASSWORD_LENGTH, NOW, mockSecurity } from "../data/AgoraMock.js";
 import { dateKey, formatDate, formatDateTime } from "../data/TaskDates.js";
 
-const profile = getProfile(PROFILE_ID);
+const profile = getProfile(getSessionProfileId());
 
 function setupProfile(form) {
     const summary = document.querySelector("#profile");
