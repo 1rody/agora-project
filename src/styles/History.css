@@ -4,7 +4,7 @@
 .history-back { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: var(--text-color); font-size: 1.5rem; text-decoration: none; flex-shrink: 0; }
 .history-filters { display: flex; flex-wrap: wrap; gap: .5rem; }
 .history-filters label { display: flex; flex-direction: column; gap: .25rem; font-size: .7rem; font-weight: 700; }
-.history-filters select, .history-filters input { min-height: 44px; max-width: 100%; border: 1px solid var(--stroke-secondary-color); border-radius: 2rem; padding: .5rem; background: var(--background-color); color: var(--text-color); font: inherit; }
+.history-filters select, .history-filters input { box-sizing: border-box; height: 44px; min-height: 44px; max-width: 100%; border: 1px solid var(--stroke-secondary-color); border-radius: 2rem; padding: .5rem; background: var(--background-color); color: var(--text-color); font: inherit; }
 .history-results { width: 100%; }
 .history-card { padding: 1rem; overflow-wrap: anywhere; }
 .history-card-title { text-align: right; }

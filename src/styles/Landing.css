@@ -257,3 +257,9 @@ h2 {
         scroll-behavior: auto;
     }
 }
+
+@media (min-width: 768px) {
+    .hero-footer {
+        display: none;
+    }
+}
