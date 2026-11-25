@@ -132,7 +132,10 @@ function setupSecurity() {
         }
         updateAccount(profileId, { password });
         form.reset();
-        feedback.textContent = "Senha alterada com sucesso.";
+        feedback.textContent = "";
+        const button = form.querySelector(".settings-button");
+        button.textContent = "SENHA SALVA!";
+        setTimeout(() => (button.textContent = "TROCAR SENHA"), 3000);
     });
 }
 

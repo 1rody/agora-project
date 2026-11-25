@@ -172,3 +172,19 @@
         filter: invert(1);
     }
 }
+
+/* Segurança: títulos de formulário e botões como no Figma */
+.settings-section > h2:not(.settings-row h2) {
+    font-size: .65rem;
+    font-weight: 400;
+    text-align: right;
+}
+.settings-form .settings-button {
+    align-self: flex-end;
+    width: auto;
+    min-width: 10rem;
+}
+.settings-form {
+    display: flex;
+    flex-direction: column;
+}
